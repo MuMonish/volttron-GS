@@ -90,11 +90,13 @@ boiler5Model.make_fit_curve()
 carrierchiller1Model = Chiller(name='carrierchiller1', size = 7.279884675000000e+03)
 carrierchiller1Model.ramp_rate = 4.8533e3
 carrierchiller1Model.make_fit_curve()
+carrierchiller1Model.make_fit_curve_forecast()
 
 # add york chiller 1
 yorkchiller1Model = Chiller(name='yorkchiller1',size=5.268245045000001e+03)
 yorkchiller1Model.ramp_rate = 3.5122e3
 yorkchiller1Model.make_fit_curve()
+
 
 # add york chiller 3
 yorkchiller3Model = Chiller(name='yorkchiller3', size=5.268245045000001e+03)

@@ -18,6 +18,7 @@ class GasTurbine(LocalAssetModel):
         self.name = None
         self.activeVertices = [[] for et in energy_types]# active vertices that are sent to electric node
         self.cost = 0.0
+        self.eff = None  # Name Plate efficiency
         self.datafilename = None
         self.engagementSchedule = [[] for et in energy_types]
         self.fit_curve = {}# fit curve parameters to relate electricity generated, fuel used, and max heat recoverable
@@ -32,6 +33,8 @@ class GasTurbine(LocalAssetModel):
         self.thermalAuction = None # thermal auction which this asset communicates
         self.thermalFluid = 'steam' # CHP gas turbines reject waste heat to steam for heat recovery
         self.vertices = [[] for et in energy_types]# vertices that define the capacity vs. fuel use of the CHP
+        self.scheduledPowers = [[] for et in energy_types]# float indicating the cooling power setpoint
+
          
 
     def create_default_vertices(self, ti, mkt):
@@ -99,7 +102,7 @@ class GasTurbine(LocalAssetModel):
         # there is a csv with the same name as the boiler
         # this csv has entries of heat out and fuel consumed
 
-        filename = self.name + '_efficiency.xlsx'
+        filename = self.datafilename + '_efficiency.xlsx'
         capacity = []
         fuel_use = []
         heat_recovered = []
@@ -169,6 +172,28 @@ class GasTurbine(LocalAssetModel):
         # cost = cost*fuel_price
         cost = max(cost,0)
         return cost
+
+    def get_vertices_from_linear_model(self, mkt):
+        self.activeVertices = {}
+        neutral_vertex_e = Vertex(marginal_price=float(mkt.gas_rate), prod_cost=float(mkt.gas_rate) * float(self.size)/self.eff, power=float(self.size))
+        upper_vertex_e = Vertex(marginal_price=float(mkt.gas_rate), prod_cost=float(mkt.gas_rate) *  float(self.size)/self.eff, power=float(self.size))
+        lower_vertex_e = Vertex(marginal_price=float(mkt.gas_rate), prod_cost=0.0, power=0.0)
+
+        neutral_vertex_h = Vertex(marginal_price=float('inf'), prod_cost=0.0, power=float((1-self.eff)*self.size))
+        neutral_vertex_c = Vertex(marginal_price=float('inf'), prod_cost=0.0, power=float(0))
+
+        vertices_val = [[neutral_vertex_e, lower_vertex_e, upper_vertex_e], neutral_vertex_h, neutral_vertex_c]
+        vertices_type = [MeasurementType.PowerReal, MeasurementType.Heat, MeasurementType.Cooling]
+
+        mkt_time = mkt.marketClearingTime
+        for type_energy, vert in enumerate(vertices_val):
+            iv = IntervalValue(self, mkt_time, mkt, MeasurementType.ActiveVertex, vert)
+            if str(vertices_type[type_energy]) in self.activeVertices:
+                self.activeVertices[str(vertices_type[type_energy])].append(iv)
+            else:
+                self.activeVertices[str(vertices_type[type_energy])] = []
+                self.activeVertices[str(vertices_type[type_energy])].append(iv)
+
 
     def update_active_vertex(self, Esetpoint, Hsetpoint, Tamb, e_cost, h_cost, fuel_price, ti, mkt):
         # find the electrical and heating vertices that are active given the heat and 

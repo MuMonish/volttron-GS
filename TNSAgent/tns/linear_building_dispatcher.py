@@ -50,7 +50,7 @@ def create_timestamp(year,month,day,length,dt=1):
     return timestamp
 
 ############# read in demand #########################################
-wb = xlrd.open_workbook(os.getcwd() +'\wsu_campus_2009_2012.xlsx')
+wb = xlrd.open_workbook(os.getcwd() +'/wsu_campus_2009_2012.xlsx')
 dem_sheet = wb.sheet_by_index(0)
 weather_sheet = wb.sheet_by_index(1)
 
@@ -91,7 +91,7 @@ elec_v_temp = [[] for i in range(n_flex_buildings)]
 cost_v_temp = np.zeros((n_flex_buildings,T))
 
 for i in range(n_flex_buildings):
-    file_b = open("flexible_building_data.txt", "r") #this loop will need to be changed if multiple buildings
+    file_b = open("flexible_building_data_old.txt", "r") #this loop will need to be changed if multiple buildings
     # read in all building data for horizon
     headings = file_b.readline()
     for t in range(T):
@@ -106,7 +106,7 @@ for i in range(n_flex_buildings):
         # electrical loads
         elec_neutral[i].append(neutral[2])
         elec_cold = cold[2]-neutral[2]
-        elec_hot = hot[2]-neutral[2] 
+        elec_hot = hot[2]-neutral[2]
         # cooling loads
         cool_neutral[i].append(neutral[3])
         cool_cold = cold[3]-neutral[3]

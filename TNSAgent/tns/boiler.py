@@ -19,6 +19,7 @@ class Boiler(LocalAssetModel):
         self.activeVertices = [[] for et in energy_types]
         self.coefs = [] # dictionary of fit curves for each thermal output
         self.cost = 0.0 #float of cost to produce heat in $
+        self.eff = None
         self.datafilename = None
         self.fuel = 'natural gas' # string: can be 'natural gas' or 'diesel'
         self.fuel_use = 0.0 #float indicating amount of fuel to provide heat 
@@ -29,6 +30,7 @@ class Boiler(LocalAssetModel):
         self.thermalAuction = None # thermal auction the asset communicates with 
         self.thermalFluid = 'steam' # string: always steam for boiler
         self.vertices = [[] for et in energy_types] #list of Vertex class instances defining the efficiency curve
+        self.scheduledPowers = [[] for et in energy_types]# float indicating the setpoint
 
     def create_default_vertices(self, ti, mkt):
         # create the vertices that define the system generally:
@@ -146,6 +148,26 @@ class Boiler(LocalAssetModel):
         #cost = cost*fuel_price
         cost = max(cost,0)
         return cost
+
+    def get_vertices_from_linear_model(self, mkt):
+        self.activeVertices = {}
+        neutral_vertex_e = Vertex(marginal_price=float('inf'), prod_cost=0.0, power=float(self.size) / self.eff)
+        neutral_vertex_c = Vertex(marginal_price=float('inf'), prod_cost=0.0, power=0.0)
+
+        neutral_vertex_h = Vertex(marginal_price=float(mkt.gas_rate), prod_cost=float(mkt.gas_rate) * float(self.size) / self.eff, power=float(self.size))
+        upper_vertex_h = Vertex(marginal_price=float(mkt.gas_rate), prod_cost=float(mkt.gas_rate) * float(self.size) / self.eff, power=float(self.size))
+        lower_vertex_h = Vertex(marginal_price=float(mkt.gas_rate), prod_cost=0.0, power=0.0)
+
+        vertices_val = [neutral_vertex_e, [neutral_vertex_h, lower_vertex_h, upper_vertex_h], neutral_vertex_c]
+        vertices_type = [MeasurementType.PowerReal, MeasurementType.Heat, MeasurementType.Cooling]
+        mkt_time = mkt.marketClearingTime
+        for type_energy, vert in enumerate(vertices_val):
+            iv = IntervalValue(self, mkt_time, mkt, MeasurementType.ActiveVertex, vert)
+            if str(vertices_type[type_energy]) in self.activeVertices:
+                self.activeVertices[str(vertices_type[type_energy])].append(iv)
+            else:
+                self.activeVertices[str(vertices_type[type_energy])] = []
+                self.activeVertices[str(vertices_type[type_energy])].append(iv)
 
     def update_active_vertex(self,Hsetpoint,Tamb,fuel_price, auc, ti):
         #find the vertics that are active given the heat setpoints

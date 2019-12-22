@@ -2,12 +2,13 @@ import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta, date
 import os
-
+import csv
 from thermal_agent_model import ThermalAgentModel 
 from measurement_type import MeasurementType
 from vertex import Vertex
 from auction import Auction
 from local_asset_model import *
+from transactive_record import TransactiveRecord
 
 class FlexibleBuilding(LocalAssetModel):
     # Building with flexible loads
@@ -31,7 +32,8 @@ class FlexibleBuilding(LocalAssetModel):
         self.Tset = 23 # temperature setpoint for building in degrees C, based on historical profile
         self.Tub = 25 # temperature upper limit before incurring extreme deviation costs
         self.vertices = [] # vertices describing marginal cost pricing
-                
+        self.receivedSignal = []
+
     def find_deviation_cost(self, Tactual=None, find_limit=False, ti=None):
         #make the curves that describe the cost of deviating from the original load
         # this function should be run once after object initiation and again
@@ -132,6 +134,92 @@ class FlexibleBuilding(LocalAssetModel):
         self.vertices = [self.activeVertices[0], self.activeVertices[1], self.activeVertices[2]]
         self.defaultVertices = [[self.activeVertices[0][0]], [self.activeVertices[1][0]], [self.activeVertices[2][0]]]
         self.defaultPower = [self.activeVertices[0][0].value.power, self.activeVertices[1][0].value.power, self.activeVertices[2][0].value.power]
+
+    ##  This function is used to extract vertices from the CESI building models developed at WSU
+    def get_vertices_from_CESI_building(self,mkt):
+        # creaate vertices that are use on instantiation and whenever communication is lost
+        # INPUTS:
+        #
+        # OUTPUTS:
+        # vertices: the default minimum and maximum limit vertices
+        Signal = {}
+        filename = "flexible_building_data.txt"  # this loop will need to be changed if multiple buildings
+        with open(filename) as file:
+            reader = csv.DictReader(file)
+
+            # Extract the interval information into transactive records.
+            # NOTE: A TransactiveRecord constructor is being used.
+            for row in reader:  # for i = 1:r
+                if 'E_Type' in row:
+                    transactive_record = TransactiveRecord(ti=row['TimeInterval'],
+                                                      rn=float(row['Record']),
+                                                      mp=float(row['MarginalPrice']),
+                                                      p=float(row['Power']),
+                                                      pu=float(row['PowerUncertainty']),
+                                                      cost=float(row['Cost']),
+                                                      rp=float(row['ReactivePower']),
+                                                      rpu=float(row['ReactivePowerUncertainty']),
+                                                      v=float(row['Voltage']),
+                                                      vu=float(row['VoltageUncertainty']),
+                                                      e_type=int(row['E_Type']))
+                else:
+                    transactive_record = TransactiveRecord(ti=row['TimeInterval'],
+                                                        rn=float(row['Record']),
+                                                        mp=float(row['MarginalPrice']),
+                                                        p=float(row['Power']),
+                                                        pu=float(row['PowerUncertainty']),
+                                                        cost=float(row['Cost']),
+                                                        rp=float(row['ReactivePower']),
+                                                        rpu=float(row['ReactivePowerUncertainty']),
+                                                        v=float(row['Voltage']),
+                                                        vu=float(row['VoltageUncertainty']))
+
+                # Save each transactive record (NOTE: We can apply more savvy to find
+                # and replace the signal later.)
+                #self.receivedSignal = [self.receivedSignal, transative_record]
+                if row['TimeInterval'] in Signal:
+                    Signal[row['TimeInterval']].append(transactive_record)
+                else:
+                    Signal[row['TimeInterval']] =[]
+                    Signal[row['TimeInterval']].append(transactive_record)
+        self.create_vertices_from_CESI_building_record(Signal, mkt)
+
+    ##  This function is used to extract vertices from the CESI building models records_developed at WSU
+    def create_vertices_from_CESI_building_record(self, Signal, mkt):
+        self.activeVertices={}
+        for interval_time in Signal:
+            for row in Signal[interval_time]:
+                if row.e_type == MeasurementType.PowerReal:
+                    neutral_vertex_e = Vertex(marginal_price=float('inf'), prod_cost=row.cost, power=row.power)
+                elif row.e_type == MeasurementType.Heat:
+                    if row.record == 0:
+                        neutral_vertex_h = Vertex(marginal_price=row.marginalPrice, prod_cost=row.cost, power=row.power)
+                    elif row.record == 1:
+                        lower_vertex_h = Vertex(marginal_price=row.marginalPrice, prod_cost=row.cost, power=row.power)
+                    elif row.record == 2:
+                        upper_vertex_h = Vertex(marginal_price=row.marginalPrice, prod_cost=row.cost, power=row.power)
+                elif row.e_type == MeasurementType.Cooling:
+                    if row.record == 0:
+                        neutral_vertex_c = Vertex(marginal_price=row.marginalPrice, prod_cost=row.cost, power=row.power)
+                    elif row.record == 1:
+                        lower_vertex_c = Vertex(marginal_price=row.marginalPrice, prod_cost=row.cost, power=row.power)
+                    elif row.record == 2:
+                        upper_vertex_c = Vertex(marginal_price=row.marginalPrice, prod_cost=row.cost, power=row.power)
+            vertices_val = [[neutral_vertex_e], [neutral_vertex_h, lower_vertex_h, upper_vertex_h], [neutral_vertex_c, lower_vertex_c, upper_vertex_c]]
+            vertices_type = [MeasurementType.PowerReal, MeasurementType.Heat, MeasurementType.Cooling]
+
+            for type_energy, vert in enumerate(vertices_val):
+                iv = IntervalValue(self, interval_time, mkt, MeasurementType.ActiveVertex, vert)
+                if str(vertices_type[type_energy]) in self.activeVertices:
+                    self.activeVertices[str(vertices_type[type_energy])].append(iv)
+                else:
+                    self.activeVertices[str(vertices_type[type_energy])] =[]
+                    self.activeVertices[str(vertices_type[type_energy])].append(iv)
+
+    def update_dispatch(self, mkt):
+        Tsetpoint = self.scheduledPowers[0]
+        print(Tsetpoint)
+
 
     def update_active_vertex(self, ti, mkt):
         # update active vertices based on the load forecast and the temperature setpoint

@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta, date
 import os
-
+import csv
 from vertex import Vertex
 from auction import Auction
 from measurement_type import MeasurementType
@@ -47,7 +47,36 @@ class InflexibleBuilding(LocalAssetModel):
             self.vertices[i] = self.activeVertices[i]
             self.defaultVertices[i] = [self.activeVertices[i][0]]
             self.defaultPower[i] = self.activeVertices[i][0].value.power
-    
+
+    def get_vertices_from_inflexible_CESI_building(self,mkt):
+        inflexible_building_folder = os.getcwd() + '/buildings/'
+        csv_name =self.name + '_buildings.csv'
+        filename = inflexible_building_folder+csv_name
+        self.activeVertices = {}
+        with open(filename) as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                timestamp_data = datetime.strptime(row['timestamp'], '%m/%d/%Y %H:%M:%S')
+                mkt_time = mkt.marketClearingTime
+                while mkt_time < (mkt.marketClearingTime + mkt.futureHorizon):
+                    if timestamp_data == mkt_time:
+                        neutral_vertex_e = Vertex(marginal_price=float('inf'), prod_cost=0.0, power=float(row['E']))
+                        neutral_vertex_h = Vertex(marginal_price=float('inf'), prod_cost=0.0, power=float(row['H']))
+                        neutral_vertex_c = Vertex(marginal_price=float('inf'), prod_cost=0.0, power=float(row['C']))
+
+                        vertices_val = [neutral_vertex_e, neutral_vertex_h,neutral_vertex_c]
+                        vertices_type = [MeasurementType.PowerReal, MeasurementType.Heat, MeasurementType.Cooling]
+                        for type_energy, vert in enumerate(vertices_val):
+                            iv = IntervalValue(self, mkt_time, mkt, MeasurementType.ActiveVertex, vert)
+                            if str(vertices_type[type_energy]) in self.activeVertices:
+                                self.activeVertices[str(vertices_type[type_energy])].append(iv)
+                            else:
+                                self.activeVertices[str(vertices_type[type_energy])] = []
+                                self.activeVertices[str(vertices_type[type_energy])].append(iv)
+                    mkt_time = mkt_time + mkt.intervalDuration
+
+
+
     def update_active_vertex(self, ti, mkt):
         # update the active vertices based on the load forecast
         # INPUTS:

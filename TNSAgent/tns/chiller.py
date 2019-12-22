@@ -18,7 +18,7 @@ class Chiller(LocalAssetModel):
     # the chiller interfaces with the thermal_agent_model and the neighbor_model
     # the thermal_agent_model negotiates with the cooling auction
     # the neighbor_model negotiates with for electrical power
-    def __init__(self, name, size, energy_types = [MeasurementType.Cooling, MeasurementType.PowerReal]):
+    def __init__(self, name = None, size=0.0, energy_types = [MeasurementType.Cooling, MeasurementType.PowerReal]):
         super(Chiller,self).__init__(energy_types=energy_types)
         self.name = name 
         self.size = size # size of system in kW of cooling
@@ -33,6 +33,7 @@ class Chiller(LocalAssetModel):
         self.scheduledPowers = [[] for et in energy_types]# float indicating the cooling power setpoint
         self.mass_flowrate = 0.0 # float indicating mass flowrate of cold water through chiller
         self.coefs = [] # fit coefficients for fit curves in format c[0] + c[1]x + c[2]x**2 . . .
+        self.coefs_linear = [] # fit coefficients for fit curves in format c[0] + c[1]x + c[2]x**2 . . .
         self.datafilename = None
         self.thermalAuction = None
         self.measurementType = energy_types
@@ -146,6 +147,26 @@ class Chiller(LocalAssetModel):
             coefs = [0.0, 3.0] # if there is no data start with an assumed COP of 3
         #save values
         self.coefs = coefs
+
+    def get_vertices_from_linear_model(self, mkt):
+        self.activeVertices = {}
+        neutral_vertex_e = Vertex(marginal_price=float(mkt.electricity_rate), prod_cost=0.0, power=float(self.size) / self.eff)
+        neutral_vertex_h = Vertex(marginal_price=float('inf'), prod_cost=0.0, power=0.0)
+
+        neutral_vertex_c = Vertex(marginal_price=float(mkt.electricity_rate), prod_cost=float(mkt.electricity_rate) * float(self.size) / self.eff, power = float(self.size))
+        upper_vertex_c = Vertex(marginal_price=float(mkt.electricity_rate), prod_cost=float(mkt.electricity_rate) * float(self.size) / self.eff, power = float(self.size))
+        lower_vertex_c = Vertex(marginal_price=float(mkt.electricity_rate), prod_cost=0.0, power=0.0)
+
+        vertices_val = [neutral_vertex_e, neutral_vertex_h, [neutral_vertex_c, lower_vertex_c, upper_vertex_c]]
+        vertices_type = [MeasurementType.PowerReal, MeasurementType.Heat, MeasurementType.Cooling]
+        mkt_time = mkt.marketClearingTime
+        for type_energy, vert in enumerate(vertices_val):
+            iv = IntervalValue(self, mkt_time, mkt, MeasurementType.ActiveVertex, vert)
+            if str(vertices_type[type_energy]) in self.activeVertices:
+                self.activeVertices[str(vertices_type[type_energy])].append(iv)
+            else:
+                self.activeVertices[str(vertices_type[type_energy])] = []
+                self.activeVertices[str(vertices_type[type_energy])].append(iv)
 
     def use_fit_curve(self, setpoint):
         # find the fuel use for the given power setting
