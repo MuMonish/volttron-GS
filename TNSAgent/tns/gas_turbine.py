@@ -194,6 +194,36 @@ class GasTurbine(LocalAssetModel):
                 self.activeVertices[str(vertices_type[type_energy])] = []
                 self.activeVertices[str(vertices_type[type_energy])].append(iv)
 
+    def update_dispatch(self, mkt):
+        for i in range(len(self.measurementType)):
+            if self.measurementType[i] == MeasurementType.PowerReal:
+                elec_dispatched = self.scheduledPowers[i]
+            elif self.measurementType[i] == MeasurementType.Heat:
+                heat_dispatched = self.scheduledPowers[i]
+            elif self.measurementType[i] == MeasurementType.Cooling:
+                cool_dispatched = self.scheduledPowers[i]
+
+        gas_consumed = self.use_fit_curve(self.fit_curve['coefs_e'],elec_dispatched)
+        cost = mkt.gas_rate * gas_consumed
+        interval = mkt.marketClearingTime.strftime('%Y%m%dT%H%M%S')
+
+        line =  str(mkt.marketClearingTime) + "," + str(interval) + "," + str(elec_dispatched) +  "," + str(gas_consumed) + "," + str(cost) + " \n"
+        file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
+        try:
+            with open(file_name, 'r+') as f:
+                lines = f.readlines()
+                if len(lines) < mkt.intervalsToClear+1: # if more than 23 lines then update
+                    for line in lines:
+                        if line.startswith('TimeStamp,'):
+                            f.writelines(line)
+        except:
+                f = open(file_name, "w")
+                f.writelines("TimeStamp,TimeInterval,Electricity Dispatched,Gas Consumed,Cost\n")
+                f.writelines(line)
+        f.close()
+
+
+
 
     def update_active_vertex(self, Esetpoint, Hsetpoint, Tamb, e_cost, h_cost, fuel_price, ti, mkt):
         # find the electrical and heating vertices that are active given the heat and 

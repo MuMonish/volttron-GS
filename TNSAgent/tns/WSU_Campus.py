@@ -483,18 +483,22 @@ boiler1Model.object = boiler1
 # add boiler 2
 boiler2 = copy.deepcopy(boiler1)
 boiler2.name = 'Boiler2'
+boiler2.model.name = 'Boiler2'
 boiler2.description = '2nd boiler at CASP'
 
 boiler3 = copy.deepcopy(boiler1)
 boiler3.name = 'Boiler3'
+boiler3.model.name = 'Boiler3'
 boiler3.description = '3rd boiler at CASP'
 
 boiler4 = copy.deepcopy(boiler1)
 boiler4.name = 'Boiler4'
+boiler4.model.name = 'Boiler4'
 boiler4.description = '4th boiler at CASP'
 
 boiler5 = copy.deepcopy(boiler1)
 boiler5.name = 'Boiler5'
+boiler5.model.name = 'Boiler5'
 boiler5.description = '5th boiler at CASP'
 ################################################################################
 ##################### Asset  #23  ##############################################
@@ -662,12 +666,17 @@ mTN.localAssets = [SCUE, Johnson_Hall, Vault3_Building, Vault5_Building, TVW131_
 # to launch the system
 # call the Market method that will instantiate active future time intervals
 
-dayAhead.check_intervals()
-dayAhead.centralized_dispatch(WSU_Campus)
+dayAhead.intervalsToClear = 1
+for time in range(dayAhead.intervalsToClear):
 
-for asset in mTN.localAssets:
-    asset.model.update_dispatch(dayAhead)
-    print('a')
+    dayAhead.marketClearingTime = dayAhead.marketClearingTime + timedelta(hours=1*time)
+    dayAhead.nextMarketClearingTime = dayAhead.marketClearingTime + timedelta(hours=1)
+
+    dayAhead.check_intervals()
+    dayAhead.centralized_dispatch(WSU_Campus)
+
+    for asset in mTN.localAssets:
+        asset.model.update_dispatch(dayAhead)
 
 
 # call the information service that predicts and stores outdoor temps
