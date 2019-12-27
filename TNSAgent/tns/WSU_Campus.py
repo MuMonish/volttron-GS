@@ -24,6 +24,13 @@ from boiler import Boiler
 from chiller import Chiller
 import copy
 
+from helics_functions import create_config_for_helics
+from helics_functions import create_broker
+from helics_functions import register_federate
+from helics_functions import destroy_federate
+import helics as h
+
+
 # create a neighbor model
 WSU_Campus = myTransactiveNode()
 mTN = WSU_Campus
@@ -61,7 +68,7 @@ mTN.informationServiceModels = [PullmanTemperatureForecast]
 date_string = '2017-01-18'
 dayAhead = Market(measurementType = [MeasurementType.PowerReal, MeasurementType.Heat, MeasurementType.Cooling])
 MKT = dayAhead
-MKT.name = 'T111_Market'
+MKT.name = 'WSU_Campus_Market'
 MKT.commitment = False # start without having commited any resources
 MKT.converged = False # start without having converged
 MKT.defaultPrice = [0.03, 0.01, 0.02] # [$/kWh]
@@ -74,7 +81,7 @@ MKT.intervalDuration = timedelta(hours=1)
 MKT.intervalsToClear = 24 # clear entire horizon at once, this is a default value
 MKT.marketClearingTime = datetime.strptime(date_string, "%Y-%m-%d").replace(hour=0, minute=0, second=0, microsecond=0) # align with top of hour
 MKT.marketOrder = 1 # this is the first and only market
-MKT.nextMarketClearingTime = MKT.marketClearingTime + timedelta(hours=1)
+MKT.nextMarketClearingTime = MKT.marketClearingTime + timedelta(hours=0)
 MKT.initialMarketState = MarketState.Inactive
 dayAhead = MKT
 dayAhead.check_intervals()
@@ -331,14 +338,14 @@ EA7_JBA_Building_Model = LAM
 ############################   Asset  #11  ######################################
 EA7_SPA_Building = LocalAsset()
 LA = EA7_SPA_Building
-LA.name = 'EA7_JBA'
+LA.name = 'EA7_SPA'
 LA.description = 'Inflexible buildings with electric, heating, and cooling loads'
 LA.maximumPower = [0,0,0]
 LA.minimumPower = [-1000,-1000,-1000]
 
 EA7_SPA_Building_Model = InflexibleBuilding()
 LAM = EA7_SPA_Building_Model
-LAM.name = 'EA7_JBA'
+LAM.name = 'EA7_SPA'
 LAM.defaultPower = [-100.0, -100.0, -100.0]
 LAM.thermalAuction = [Centralized_Dispatcher]
 LAM.get_vertices_from_inflexible_CESI_building(dayAhead)
@@ -351,14 +358,14 @@ EA7_SPA_Building_Model = LAM
 ############################   Asset  #12  ######################################
 EB13_JBA_Building = LocalAsset()
 LA = EB13_JBA_Building
-LA.name = 'EA7_JBA'
+LA.name = 'EB13_JBA'
 LA.description = 'Inflexible buildings with electric, heating, and cooling loads'
 LA.maximumPower = [0,0,0]
 LA.minimumPower = [-1000,-1000,-1000]
 
 EB13_JBA_Building_Model = InflexibleBuilding()
 LAM = EB13_JBA_Building_Model
-LAM.name = 'EA7_JBA'
+LAM.name = 'EB13_JBA'
 LAM.defaultPower = [-100.0, -100.0, -100.0]
 LAM.thermalAuction = [Centralized_Dispatcher]
 LAM.get_vertices_from_inflexible_CESI_building(dayAhead)
@@ -371,14 +378,14 @@ EB13_JBA_Building_Model = LAM
 ############################   Asset  #13  ######################################
 EB13_JBB_Building = LocalAsset()
 LA = EB13_JBB_Building
-LA.name = 'EA7_JBA'
+LA.name = 'EB13_JBB'
 LA.description = 'Inflexible buildings with electric, heating, and cooling loads'
 LA.maximumPower = [0,0,0]
 LA.minimumPower = [-1000,-1000,-1000]
 
 EB13_JBB_Building_Model = InflexibleBuilding()
 LAM = EB13_JBB_Building_Model
-LAM.name = 'EA7_JBA'
+LAM.name = 'EB13_JBB'
 LAM.defaultPower = [-100.0, -100.0, -100.0]
 LAM.thermalAuction = [Centralized_Dispatcher]
 LAM.get_vertices_from_inflexible_CESI_building(dayAhead)
@@ -666,55 +673,46 @@ mTN.localAssets = [SCUE, Johnson_Hall, Vault3_Building, Vault5_Building, TVW131_
 # to launch the system
 # call the Market method that will instantiate active future time intervals
 
-dayAhead.intervalsToClear = 1
+#############################################################################
+########################## Intialize Helics  ################################
+broker = create_broker()
+name_neighbors = []
+#json_filename = create_config_for_helics(mTN.name, [mTN.neighbors[i].name for i in range(len(mTN.neighbors))])
+#json_filename = create_config_for_helics(dayAhead.name, [mTN.localAssets[0].name], [mTN.localAssets[i].name for i in range(len(mTN.localAssets))], [3 for i in range(len(mTN.localAssets))], config_for_gridlabd = True)
+json_filename = create_config_for_helics(dayAhead.name, [mTN.localAssets[0].name], [mTN.localAssets[i].name for i in range(len(mTN.localAssets))], [3 for i in range(len(mTN.localAssets))], config_for_gridlabd = True)
+
+print(json_filename)
+fed = register_federate(json_filename)
+status = h.helicsFederateEnterInitializingMode(fed)
+status = h.helicsFederateEnterExecutingMode(fed)
+
+##############################################################################
+
+dayAhead.intervalsToClear = 24
 for time in range(dayAhead.intervalsToClear):
 
-    dayAhead.marketClearingTime = dayAhead.marketClearingTime + timedelta(hours=1*time)
-    dayAhead.nextMarketClearingTime = dayAhead.marketClearingTime + timedelta(hours=1)
+    for asset in mTN.localAssets:
+        if 'FlexibleBuilding' in str(asset.model):
+            asset.model.request_helics_to_get_vertices_from_CESI_building(dayAhead, fed)
+            #asset.model.get_vertices_from_CESI_building(dayAhead)
+        if 'InflexibleBuilding' in str(asset.model):
+            asset.model.get_vertices_from_inflexible_CESI_building(dayAhead)
 
     dayAhead.check_intervals()
     dayAhead.centralized_dispatch(WSU_Campus)
 
+    #dayAhead.update_electrical_network(mTN, fed)
     for asset in mTN.localAssets:
-        asset.model.update_dispatch(dayAhead)
+        asset.model.update_dispatch(dayAhead, fed)
 
+    dayAhead.marketClearingTime = dayAhead.marketClearingTime + timedelta(hours=1)
+    dayAhead.nextMarketClearingTime = dayAhead.marketClearingTime + timedelta(hours=1)
 
 # call the information service that predicts and stores outdoor temps
 PullmanTemperatureForecast.update_information(dayAhead)
 
-
-# recieve any transactive signals sent to myTransactiveNode from its
-# TransactiveNeighbors.
-AvistaModel.receive_transactive_signal(TUR111)
-CoolAuctionModel.receive_transactive_signal(TUR111)
-HeatAuctionModel.receive_transactive_signal(TUR111)
-
-#balance supply and demand at myTransactiveNode. This is iterative. A
-# succession of iterationcounters and duality gap (the convergence metric)
-# will be generated until the system converges. All scheduled powers and
-# marginal prices should be meaningful for all active time intervals at the
-# conclusion of this method
-dayAhead.balance(WSU_Campus)
-
-# myTransactiveNode must prepare a set of TransactiveRecords for each of
-# its TransactiveNeighbors. The records are updated and stored into the
-# property "mySignal" of the TransactiveNeighbor.
-AvistaModel.prep_transactive_signal(dayAhead, TUR111)
-CoolAuctionModel.prep_transactive_signal(dayAhead, TUR111)
-HeatAuctionModel.prep_transactive_signal(dayAhead, TUR111)
+############################ Finalize Helics  ##############################
+destroy_federate(fed)
+############################################################################
 
 
-# Finally, the prepared TransactiveRecords are sent to their corresponding
-# TransactiveNeighbor.
-#AvistaModel.send_transactive_signal(TUR111)
-CoolAuctionModel.send_transactive_signal(TUR111)
-HeatAuctionModel.send_transactive_signal(TUR111)
-
-# invoke the market object to sum all powers as will be needed by the
-# net supply/demand curve
-dayAhead.assign_system_vertices(TUR111)
-
-# view the system supply/demand curve
-dayAhead.view_net_curve(0)
-dayAhead.view_net_curve(0, energy_type=MeasurementType.Heat)
-dayAhead.view_net_curve(0, energy_type=MeasurementType.Cooling)

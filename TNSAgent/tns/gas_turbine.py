@@ -194,7 +194,7 @@ class GasTurbine(LocalAssetModel):
                 self.activeVertices[str(vertices_type[type_energy])] = []
                 self.activeVertices[str(vertices_type[type_energy])].append(iv)
 
-    def update_dispatch(self, mkt):
+    def update_dispatch(self, mkt, fed, helics_flag = bool(0)):
         for i in range(len(self.measurementType)):
             if self.measurementType[i] == MeasurementType.PowerReal:
                 elec_dispatched = self.scheduledPowers[i]

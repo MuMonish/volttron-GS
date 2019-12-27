@@ -10,6 +10,8 @@ from local_asset_model import LocalAssetModel
 from helpers import *
 from time_interval import TimeInterval
 
+import helics as h
+
 class InflexibleBuilding(LocalAssetModel):
     # InflexibleBuilding class describes the behavior of a building without
     # any load flexibility. The building provides loads to the thermal auctions
@@ -75,30 +77,56 @@ class InflexibleBuilding(LocalAssetModel):
                                 self.activeVertices[str(vertices_type[type_energy])].append(iv)
                     mkt_time = mkt_time + mkt.intervalDuration
 
-    def update_dispatch(self, mkt):
+    def update_dispatch(self, mkt, fed, helics_flag = bool(1)):
         for i in range(len(self.measurementType)):
             if self.measurementType[i] == MeasurementType.PowerReal:
-                elec_dispatched = self.scheduledPowers[i]
+                elec_dispatched = self.scheduledPowers[i]*1000
             elif self.measurementType[i] == MeasurementType.Heat:
-                heat_dispatched = self.scheduledPowers[i]
+                heat_dispatched = self.scheduledPowers[i]*1000
             elif self.measurementType[i] == MeasurementType.Cooling:
-                cool_dispatched = self.scheduledPowers[i]
+                cool_dispatched = self.scheduledPowers[i]*1000
 
         interval = mkt.marketClearingTime.strftime('%Y%m%dT%H%M%S')
+        t = mkt.marketClearingTime.hour * 3600
+        t = t+3
+        if helics_flag == True:
+            key1 = "WSU_C_GLD_" + self.name + "_power_A"
+            key2 = "WSU_C_GLD_" + self.name + "_power_B"
+            key3 = "WSU_C_GLD_" + self.name + "_power_C"
+            try:
+                pubA = h.helicsFederateGetPublication(fed, key1)
+                pubB = h.helicsFederateGetPublication(fed, key2)
+                pubC = h.helicsFederateGetPublication(fed, key3)
 
-        line =  str(mkt.marketClearingTime) + "," + str(interval) + "," + str(elec_dispatched) +  "," + str(heat_dispatched) + "," + str(cool_dispatched) + " \n"
+                status = h.helicsPublicationPublishComplex(pubA, elec_dispatched/3, 0)
+                status = h.helicsPublicationPublishComplex(pubB, elec_dispatched/3, 0)
+                status = h.helicsPublicationPublishComplex(pubC, elec_dispatched/3, 0)
+
+                print('Data Published to Helics -->', elec_dispatched/3)
+                grantedtime = -1
+                while grantedtime < t:
+                    grantedtime = h.helicsFederateRequestTime (fed, t)
+                time.sleep(0.1)
+            except:
+                print('Publication was not registered')
+
+        line_new =  str(mkt.marketClearingTime) + "," + str(interval) + "," + str(elec_dispatched) +  "," + str(heat_dispatched) + "," + str(cool_dispatched) + " \n"
         file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
         try:
             with open(file_name, 'r+') as f:
                 lines = f.readlines()
-                if len(lines) < mkt.intervalsToClear+1: # if more than 23 lines then update
+                if len(lines) < mkt.intervalsToClear-1: # if more than 23 lines then update
                     for line in lines:
                         if line.startswith('TimeStamp,'):
-                            f.writelines(line)
+                            f.writelines(line_new)
+                else:
+                    f = open(file_name, "w")
+                    f.writelines("TimeStamp,TimeInterval,Electricity Dispatched,Heat Dispatched,Cooling Dispatched\n")
+                    f.writelines(line_new)
         except:
                 f = open(file_name, "w")
                 f.writelines("TimeStamp,TimeInterval,Electricity Dispatched,Heat Dispatched,Cooling Dispatched\n")
-                f.writelines(line)
+                f.writelines(line_new)
         f.close()
 
     def update_active_vertex(self, ti, mkt):

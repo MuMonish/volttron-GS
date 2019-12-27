@@ -10,6 +10,12 @@ from auction import Auction
 from local_asset_model import *
 from transactive_record import TransactiveRecord
 
+import helics as h
+import random
+import logging
+import json
+import time
+
 class FlexibleBuilding(LocalAssetModel):
     # Building with flexible loads
     # the electrical loads interface with the electrical node and are not typically flexible
@@ -136,7 +142,7 @@ class FlexibleBuilding(LocalAssetModel):
         self.defaultPower = [self.activeVertices[0][0].value.power, self.activeVertices[1][0].value.power, self.activeVertices[2][0].value.power]
 
     ##  This function is used to extract vertices from the CESI building models developed at WSU
-    def get_vertices_from_CESI_building(self,mkt):
+    def get_vertices_from_CESI_building(self, mkt):
         # creaate vertices that are use on instantiation and whenever communication is lost
         # INPUTS:
         #
@@ -185,6 +191,100 @@ class FlexibleBuilding(LocalAssetModel):
         self.create_vertices_from_CESI_building_record(Signal, mkt)
 
     ##  This function is used to extract vertices from the CESI building models records_developed at WSU
+    def request_helics_to_get_vertices_from_CESI_building(self, mkt, fed):
+        # FUNCTION RECEIVE_TRANASCTIVE_SIGNAL USING HELICS () - receive and save transactive
+        # FUNCTION RECEIVE_TRANASCTIVE_SIGNAL() - receive and save transactive
+        # records from a transactive Neighbor object.
+        # (NOTE: In the Matlab implementation, the transactive signals are
+        # "received" via a readable csv file.)
+        # mtn = myTransactiveNode object
+        # obj - the NeighborModel object
+        #
+        # The process of receiving a transactive signal is emulated by reading an
+        # available text table that is presumed to have been created by the
+        # transactive neighbor. This process may change in field settings and using
+        # Python and other code environments.
+
+        # If trying to receive a transactive signal from a non-transactive neighbor,
+        # create a warning and return.
+        # if not self.transactive:
+        #     _log.warning('Transactive signals are not expected to be received from non-transactive neighbors. '
+        #                  'No signal is read.')
+        #     return
+
+        # Here is the format for the preferred text filename. (NOTE: The name is
+        # applied by the transactive neighbor and is not under the direct control
+        # of myTransactiveNode.)
+        # The filename starts with a shortened name of the originating node.
+        source_node = str(self.name)
+        if len(source_node) > 5:
+            source_node = source_node[0:5]  # source_node(1:5)
+
+        # Shorten the name of the target node
+        target_node = str(mkt.name)
+        if len(target_node) > 5:
+            target_node = target_node[0:5]  # target_node(1:5)
+
+        # Format the filename. Do not allow spaces.
+        Signal = {}
+        filename = ''.join([source_node, '-', target_node, '.txt'])
+        filename = filename.replace(' ', '')
+        sub_key = source_node+'_'+target_node
+        #filename = 'Python/'+filename
+
+
+        t = mkt.marketClearingTime.hour*3600
+
+        grantedtime = -1
+        while grantedtime < t:
+            grantedtime = h.helicsFederateRequestTime (fed, t)
+        time.sleep(0.1)
+
+        #######################   Subscribing   ############################
+        print(sub_key)
+        sub = h.helicsFederateGetSubscription(fed, sub_key)
+        sub_data = h.helicsInputGetString(sub)
+        print('Time requested via Helics -->', t)
+        print('Data obtained via Helics -->', sub_data)
+        print('Already Received Data @ ', grantedtime)
+
+            # Extract the interval information into transactive records.
+            # NOTE: A TransactiveRecord constructor is being used.
+        for row in csv.DictReader(sub_data.splitlines()):  # for i = 1:r
+            if 'E_Type' in row:
+                transactive_record = TransactiveRecord(ti=row['TimeInterval'],
+                                                      rn=int(row['Record']),
+                                                      mp=float(row['MarginalPrice']),
+                                                      p=float(row['Power']),
+                                                      pu=float(row['PowerUncertainty']),
+                                                      cost=float(row['Cost']),
+                                                      rp=float(row['ReactivePower']),
+                                                      rpu=float(row['ReactivePowerUncertainty']),
+                                                      v=float(row['Voltage']),
+                                                      vu=float(row['VoltageUncertainty']),
+                                                      e_type=int(row['E_Type']))
+            else:
+                transactive_record = TransactiveRecord(ti=row['TimeInterval'],
+                                                        rn=int(row['Record']),
+                                                        mp=float(row['MarginalPrice']),
+                                                        p=float(row['Power']),
+                                                        pu=float(row['PowerUncertainty']),
+                                                        cost=float(row['Cost']),
+                                                        rp=float(row['ReactivePower']),
+                                                        rpu=float(row['ReactivePowerUncertainty']),
+                                                        v=float(row['Voltage']),
+                                                        vu=float(row['VoltageUncertainty']))
+
+                # Save each transactive record (NOTE: We can apply more savvy to find
+                # and replace the signal later.)
+                #self.receivedSignal = [self.receivedSignal, transative_record]
+            if row['TimeInterval'] in Signal:
+                Signal[row['TimeInterval']].append(transactive_record)
+            else:
+                Signal[row['TimeInterval']] = []
+                Signal[row['TimeInterval']].append(transactive_record)
+        self.create_vertices_from_CESI_building_record(Signal, mkt)
+
     def create_vertices_from_CESI_building_record(self, Signal, mkt):
         self.activeVertices={}
         for interval_time in Signal:
@@ -216,7 +316,7 @@ class FlexibleBuilding(LocalAssetModel):
                     self.activeVertices[str(vertices_type[type_energy])] =[]
                     self.activeVertices[str(vertices_type[type_energy])].append(iv)
 
-    def update_dispatch(self, mkt):
+    def update_dispatch(self, mkt, fed, helics_flag = bool(1)):
         for i in range(len(self.measurementType)):
             if self.measurementType[i] == MeasurementType.PowerReal:
                 elec_dispatched = self.scheduledPowers[i]
@@ -227,7 +327,40 @@ class FlexibleBuilding(LocalAssetModel):
 
         interval = mkt.marketClearingTime.strftime('%Y%m%dT%H%M%S')
 
-        line =  str(mkt.marketClearingTime) + "," + str(interval) + "," + str(elec_dispatched) +  "," + str(heat_dispatched) + "," + str(cool_dispatched) + " \n"
+
+        header = str("TimeStamp,TimeInterval,Temperature Setpoint Dispatched,Heat Dispatched,Cooling Dispatched\n")
+        new_line = str(mkt.marketClearingTime) + "," + str(interval) + "," + str(elec_dispatched) +  "," + str(heat_dispatched) + "," + str(cool_dispatched) + " \n"
+
+        t = mkt.marketClearingTime.hour * 3600
+        t = t+1
+
+        if helics_flag == True:
+            target_node = str(self.name)
+            if len(target_node) > 5:
+                target_node = target_node[0:5]  # source_node(1:5)
+
+            # Shorten the name of the target node
+            source_node = str(mkt.name)
+            if len(source_node) > 5:
+                source_node = source_node[0:5]  # target_node(1:5)
+
+            # Format the filename. Do not allow spaces.
+            pub_key = source_node+'_'+target_node
+            pub_data = header + new_line
+
+            grantedtime = -1
+            while grantedtime < t:
+                grantedtime = h.helicsFederateRequestTime (fed, t)
+            time.sleep(0.1)
+
+            pub = h.helicsFederateGetPublication(fed, pub_key)
+            print(pub)
+            status = h.helicsPublicationPublishString(pub, pub_data)
+            print('Data Published to Helics -->', pub_data)
+
+            print('Time requested via Helics -->', t)
+            print('Time granted via Helics -->', grantedtime)
+
         file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
         try:
             with open(file_name, 'r+') as f:
@@ -235,12 +368,14 @@ class FlexibleBuilding(LocalAssetModel):
                 if len(lines) < mkt.intervalsToClear+1: # if more than 23 lines then update
                     for line in lines:
                         if line.startswith('TimeStamp,'):
-                            f.writelines(line)
+                            f.writelines(new_line)
         except:
                 f = open(file_name, "w")
-                f.writelines("TimeStamp,TimeInterval,Temperature Setpoint Dispatched,Dispatched,Heat Dispatched,Cooling Dispatched\n")
-                f.writelines(line)
+                f.writelines(header)
+                f.writelines(new_line)
         f.close()
+
+
 
     def update_active_vertex(self, ti, mkt):
         # update active vertices based on the load forecast and the temperature setpoint

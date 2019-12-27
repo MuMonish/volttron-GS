@@ -1,0 +1,175 @@
+
+object load { // 5337 kVA
+	parent ECSSA;
+	phases ABCN;
+	name ECSSA_Load;
+	object player {
+		name player ECSSA_Load_A;
+		parent ECSSA_Load;
+		property base_power_A;
+		file player_files/ECSSA_Load_A.player;
+		};
+	object player {
+		name player ECSSA_Load_B;
+		parent ECSSA_Load;
+		property base_power_B;
+		file player_files/ECSSA_Load_B.player;
+		};
+	object player {
+		name player ECSSA_Load_C;
+		parent ECSSA_Load;
+		property base_power_C;
+		file player_files/ECSSA_Load_C.player;
+		};
+	power_pf_A 0.900000;
+	current_pf_A 0.9;
+	impedance_pf_A 0.9;
+	power_pf_B 0.900000;
+	current_pf_B 0.9;
+	impedance_pf_B 0.9;
+	power_pf_C 0.900000;
+	current_pf_C 0.9;
+	impedance_pf_C 0.9;
+	power_fraction_A 0.50;
+	current_fraction_A 0.10;
+	impedance_fraction_A 0.40;
+	power_fraction_B 0.50;
+	current_fraction_B 0.10;
+	impedance_fraction_B 0.40;
+	power_fraction_C 0.50;
+	current_fraction_C 0.10;
+	impedance_fraction_C 0.40;
+	nominal_voltage 2401.78;
+}
+
+
+object load { // 5337 kVA
+	parent GWSP-A;
+	phases ABCN;
+	name GWSP-A_Load;
+	object player {
+		name player GWSP-A_Load_A;
+		parent GWSP-A_Load;
+		property base_power_A;
+		file player_files/GWSP-A_Load_A.player;
+		};
+	object player {
+		name player GWSP-A_Load_B;
+		parent GWSP-A_Load;
+		property base_power_B;
+		file player_files/GWSP-A_Load_B.player;
+		};
+	object player {
+		name player GWSP-A_Load_C;
+		parent GWSP-A_Load;
+		property base_power_C;
+		file player_files/GWSP-A_Load_C.player;
+		};
+	power_pf_A 0.900000;
+	current_pf_A 0.9;
+	impedance_pf_A 0.9;
+	power_pf_B 0.900000;
+	current_pf_B 0.9;
+	impedance_pf_B 0.9;
+	power_pf_C 0.900000;
+	current_pf_C 0.9;
+	impedance_pf_C 0.9;
+	power_fraction_A 0.50;
+	current_fraction_A 0.10;
+	impedance_fraction_A 0.40;
+	power_fraction_B 0.50;
+	current_fraction_B 0.10;
+	impedance_fraction_B 0.40;
+	power_fraction_C 0.50;
+	current_fraction_C 0.10;
+	impedance_fraction_C 0.40;
+	nominal_voltage 2401.78;
+}
+
+
+object load { // 5337 kVA
+	parent ECSSB;
+	phases ABCN;
+	name ECSSB_Load;
+	object player {
+		name player ECSSB_Load_A;
+		parent ECSSB_Load;
+		property base_power_A;
+		file player_files/ECSSB_Load_A.player;
+		};
+	object player {
+		name player ECSSB_Load_B;
+		parent ECSSB_Load;
+		property base_power_B;
+		file player_files/ECSSB_Load_B.player;
+		};
+	object player {
+		name player ECSSB_Load_C;
+		parent ECSSB_Load;
+		property base_power_C;
+		file player_files/ECSSB_Load_C.player;
+		};
+	power_pf_A 0.900000;
+	current_pf_A 0.9;
+	impedance_pf_A 0.9;
+	power_pf_B 0.900000;
+	current_pf_B 0.9;
+	impedance_pf_B 0.9;
+	power_pf_C 0.900000;
+	current_pf_C 0.9;
+	impedance_pf_C 0.9;
+	power_fraction_A 0.50;
+	current_fraction_A 0.10;
+	impedance_fraction_A 0.40;
+	power_fraction_B 0.50;
+	current_fraction_B 0.10;
+	impedance_fraction_B 0.40;
+	power_fraction_C 0.50;
+	current_fraction_C 0.10;
+	impedance_fraction_C 0.40;
+	nominal_voltage 2401.78;
+}
+
+
+object load { // 5337 kVA
+	parent GWSP-B;
+	phases ABCN;
+	name GWSP-B_Load;
+	object player {
+		name player GWSP-B_Load_A;
+		parent GWSP-B_Load;
+		property base_power_A;
+		file player_files/GWSP-B_Load_A.player;
+		};
+	object player {
+		name player GWSP-B_Load_B;
+		parent GWSP-B_Load;
+		property base_power_B;
+		file player_files/GWSP-B_Load_B.player;
+		};
+	object player {
+		name player GWSP-B_Load_C;
+		parent GWSP-B_Load;
+		property base_power_C;
+		file player_files/GWSP-B_Load_C.player;
+		};
+	power_pf_A 0.900000;
+	current_pf_A 0.9;
+	impedance_pf_A 0.9;
+	power_pf_B 0.900000;
+	current_pf_B 0.9;
+	impedance_pf_B 0.9;
+	power_pf_C 0.900000;
+	current_pf_C 0.9;
+	impedance_pf_C 0.9;
+	power_fraction_A 0.50;
+	current_fraction_A 0.10;
+	impedance_fraction_A 0.40;
+	power_fraction_B 0.50;
+	current_fraction_B 0.10;
+	impedance_fraction_B 0.40;
+	power_fraction_C 0.50;
+	current_fraction_C 0.10;
+	impedance_fraction_C 0.40;
+	nominal_voltage 2401.78;
+}

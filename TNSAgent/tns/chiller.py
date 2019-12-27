@@ -168,7 +168,7 @@ class Chiller(LocalAssetModel):
                 self.activeVertices[str(vertices_type[type_energy])] = []
                 self.activeVertices[str(vertices_type[type_energy])].append(iv)
 
-    def update_dispatch(self, mkt):
+    def update_dispatch(self, mkt, fed, helics_flag = bool(0)):
         for i in range(len(self.measurementType)):
             if self.measurementType[i] == MeasurementType.PowerReal:
                 elec_dispatched = self.scheduledPowers[i]
@@ -177,7 +177,7 @@ class Chiller(LocalAssetModel):
             elif self.measurementType[i] == MeasurementType.Cooling:
                 cool_dispatched = self.scheduledPowers[i]
 
-        elec_consumed = self.use_fit_curve(cool_dispatched)
+        elec_consumed = cool_dispatched/self.eff
         cost = mkt.electricity_rate * elec_consumed
         interval = mkt.marketClearingTime.strftime('%Y%m%dT%H%M%S')
 

@@ -658,11 +658,11 @@ class Market:
                 inflexible_building_idx = inflexible_building_idx+1
 
         asset_type = ['FlexibleBuilding']
-        #self.view_vertices_and_schedules(mtn, asset_type)
+        self.view_vertices_and_schedules(mtn, asset_type)
         print('One Time step solved and vertices are updated with schedules')
 
     def view_vertices_and_schedules(self, mtn, asset_type):
-
+        #plt.figure()
         for n_type in range(len(asset_type)):
             number_assets = 0
             for asset in mtn.localAssets:
@@ -670,13 +670,13 @@ class Market:
                     number_assets = number_assets+2 # one plot for heating and one plot for cooling
                 elif asset_type[n_type] in str(asset.model):
                     number_assets = number_assets + 1
-            plt.figure()
+
             if number_assets < 3:
                 subplot_rows = number_assets
                 fig, axs = plt.subplots(subplot_rows)
             else:
                 subplot_rows == number_assets/2 + number_assets%2
-                fig, axs = plt.subplots(subplot_rows,2)
+                fig, axs = plt.subplots(subplot_rows, 2)
 
             for asset in mtn.localAssets:
                 if asset_type[n_type] in str(asset.model) and (asset_type[n_type] == 'FlexibleBuilding'):
@@ -707,24 +707,18 @@ class Market:
                         elif asset.model.measurementType[i] == MeasurementType.Cooling:
                             cool_dispatched = asset.model.scheduledPowers[i]
 
-
+                    title_1 = 'Cooling Flexibility - Time: ' + str(self.marketClearingTime)
+                    title_2 = 'Heating Flexibility - Time: ' + str(self.marketClearingTime)
                     axs[0].plot(temp_x, cool_y)
                     axs[0].plot([Tset_dispatched,Tset_dispatched], [0,cool_dispatched], color='red', marker='o')
-                    axs[0].set_title('Axis [0,0]')
+                    axs[0].set_title(title_1)
                     axs[1].plot(temp_x, heat_y)
                     axs[1].plot([Tset_dispatched, Tset_dispatched], [0, heat_dispatched], color='red', marker='o')
-                    axs[1].set_title('Axis [0,0]')
+                    axs[1].set_title(title_2)
 
-
-            plt.show()
-
-
-
-
-
-
-
-
+            plt.show(block=False)
+            plt.pause(5)
+            plt.close(fig)
 
 
     def check_intervals(self):
