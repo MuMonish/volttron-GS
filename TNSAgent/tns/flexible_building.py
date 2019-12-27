@@ -363,12 +363,8 @@ class FlexibleBuilding(LocalAssetModel):
 
         file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
         try:
-            with open(file_name, 'r+') as f:
-                lines = f.readlines()
-                if len(lines) < mkt.intervalsToClear+1: # if more than 23 lines then update
-                    for line in lines:
-                        if line.startswith('TimeStamp,'):
-                            f.writelines(new_line)
+            with open(file_name, 'a') as f:
+                f.writelines(new_line)
         except:
                 f = open(file_name, "w")
                 f.writelines(header)

@@ -2,7 +2,7 @@
 
 #set iteration_limit=50;
 
-#set minimum_timestep=600;
+#set minimum_timestep=300;
 
 #set relax_naming_rules=1;
 

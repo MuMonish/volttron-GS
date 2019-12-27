@@ -113,16 +113,8 @@ class InflexibleBuilding(LocalAssetModel):
         line_new =  str(mkt.marketClearingTime) + "," + str(interval) + "," + str(elec_dispatched) +  "," + str(heat_dispatched) + "," + str(cool_dispatched) + " \n"
         file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
         try:
-            with open(file_name, 'r+') as f:
-                lines = f.readlines()
-                if len(lines) < mkt.intervalsToClear-1: # if more than 23 lines then update
-                    for line in lines:
-                        if line.startswith('TimeStamp,'):
-                            f.writelines(line_new)
-                else:
-                    f = open(file_name, "w")
-                    f.writelines("TimeStamp,TimeInterval,Electricity Dispatched,Heat Dispatched,Cooling Dispatched\n")
-                    f.writelines(line_new)
+            with open(file_name, 'a') as f:
+                f.writelines(line_new)
         except:
                 f = open(file_name, "w")
                 f.writelines("TimeStamp,TimeInterval,Electricity Dispatched,Heat Dispatched,Cooling Dispatched\n")

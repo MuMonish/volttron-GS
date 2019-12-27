@@ -181,19 +181,15 @@ class Chiller(LocalAssetModel):
         cost = mkt.electricity_rate * elec_consumed
         interval = mkt.marketClearingTime.strftime('%Y%m%dT%H%M%S')
 
-        line = str(mkt.marketClearingTime) + "," + str(interval) + "," + str(cool_dispatched) + "," + str(elec_consumed) + "," + str(cost) + " \n"
+        line_new = str(mkt.marketClearingTime) + "," + str(interval) + "," + str(cool_dispatched) + "," + str(elec_consumed) + "," + str(cost) + " \n"
         file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
         try:
-            with open(file_name, 'r+') as f:
-                lines = f.readlines()
-                if len(lines) < mkt.intervalsToClear+1: # if more than 23 lines then update
-                    for line in lines:
-                        if line.startswith('TimeStamp,'):
-                            f.writelines(line)
+            with open(file_name, 'a') as f:
+                f.writelines(line_new)
         except:
                 f = open(file_name, "w")
                 f.writelines("TimeStamp,TimeInterval,Cool Dispatched,Electricity Consumed,Cost\n")
-                f.writelines(line)
+                f.writelines(line_new)
         f.close()
 
 
