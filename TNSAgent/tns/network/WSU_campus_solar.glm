@@ -30,6 +30,100 @@ module assert;
 
 module climate;
 
+module connection;
+
+object helics_msg {
+  name WSU_Campus_helics;
+  configure WSU_Campus_feeders.json;
+}
+
+object meter {
+	name swing_bus;
+	phases ABCN;
+	nominal_voltage 7970.00;
+	voltage_A 7970.00+0d;
+	voltage_B 7970.00-120.0d;
+	voltage_C 7970.00+120.0d;
+	bustype SWING;
+}
+
+object switch {
+	name Switch_TUR115_swing;
+	phases ABCN;
+	from swing_bus;
+	to TUR115;
+	phase_A_state CLOSED;
+	phase_B_state CLOSED;
+	phase_C_state CLOSED;
+	operating_mode INDIVIDUAL;
+}
+
+object switch {
+	name Switch_SPU125_swing;
+	phases ABCN;
+	from swing_bus;
+	to SPU125;
+	phase_A_state CLOSED;
+	phase_B_state CLOSED;
+	phase_C_state CLOSED;
+	operating_mode INDIVIDUAL;
+}
+
+object switch {
+	name Switch_SPU122_swing;
+	phases ABCN;
+	from swing_bus;
+	to SPU122;
+	phase_A_state CLOSED;
+	phase_B_state CLOSED;
+	phase_C_state CLOSED;
+	operating_mode INDIVIDUAL;
+}
+
+object switch {
+	name Switch_SPU124_swing;
+	phases ABCN;
+	from swing_bus;
+	to SPU124;
+	phase_A_state CLOSED;
+	phase_B_state CLOSED;
+	phase_C_state CLOSED;
+	operating_mode INDIVIDUAL;
+}
+
+object switch {
+	name Switch_TUR117_swing;
+	phases ABCN;
+	from swing_bus;
+	to TUR117;
+	phase_A_state CLOSED;
+	phase_B_state CLOSED;
+	phase_C_state CLOSED;
+	operating_mode INDIVIDUAL;
+}
+
+object switch {
+	name Switch_TUR111_swing;
+	phases ABCN;
+	from swing_bus;
+	to TUR111;
+	phase_A_state CLOSED;
+	phase_B_state CLOSED;
+	phase_C_state CLOSED;
+	operating_mode INDIVIDUAL;
+}
+
+object switch {
+	name Switch_TVW131_swing;
+	phases ABCN;
+	from swing_bus;
+	to TVW131;
+	phase_A_state CLOSED;
+	phase_B_state CLOSED;
+	phase_C_state CLOSED;
+	operating_mode INDIVIDUAL;
+}
+
 object switch {
 	name Switch_SolarA_link;
 	phases AN;
@@ -374,7 +468,7 @@ object meter {
 	voltage_A 7970.00+0d;
 	voltage_B 7970.00-120.0d;
 	voltage_C 7970.00+120.0d;
-	bustype SWING;
+	bustype PQ;
 }
 
 object meter {
@@ -384,7 +478,7 @@ object meter {
 	voltage_A 7970.00+0d;
 	voltage_B 7970.00-120.0d;
 	voltage_C 7970.00+120.0d;
-	bustype SWING;
+	bustype PQ;
 }
 
 object meter {
@@ -394,7 +488,7 @@ object meter {
 	voltage_A 7970.00+0d;
 	voltage_B 7970.00-120.0d;
 	voltage_C 7970.00+120.0d;
-	bustype SWING;
+	bustype PQ;
 }
 
 object meter {
@@ -404,7 +498,7 @@ object meter {
 	voltage_A 7970.00+0d;
 	voltage_B 7970.00-120.0d;
 	voltage_C 7970.00+120.0d;
-	bustype SWING;
+	bustype PQ;
 }
 
 object meter {
@@ -414,7 +508,7 @@ object meter {
 	voltage_A 7970.00+0d;
 	voltage_B 7970.00-120.0d;
 	voltage_C 7970.00+120.0d;
-	bustype SWING;
+	bustype PQ;
 }
 
 object meter {
@@ -424,7 +518,7 @@ object meter {
 	voltage_A 7970.00+0d;
 	voltage_B 7970.00-120.0d;
 	voltage_C 7970.00+120.0d;
-	bustype SWING;
+	bustype PQ;
 }
 
 object meter {
@@ -434,7 +528,7 @@ object meter {
 	voltage_A 7970.00+0d;
 	voltage_B 7970.00-120.0d;
 	voltage_C 7970.00+120.0d;
-	bustype SWING;
+	bustype PQ;
 }
 
 object meter {
@@ -26961,13 +27055,5 @@ object climate {
 	name Pullman;
 	tmyfile "727857TYA.tmy3";
 	interpolate "QUADRATIC";
-	cloud_model "CUMULUS";
-	cloud_opacity 0.05;
-//	reader csvreader;
 }
-
-//object csv_reader {
-//	name csvreader;
-//	filename "727857TYA.tmy3";
-//}
 

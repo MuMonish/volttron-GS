@@ -232,12 +232,11 @@ class FlexibleBuilding(LocalAssetModel):
         sub_key = source_node+'_'+target_node
         #filename = 'Python/'+filename
 
-
         t = mkt.marketClearingTime.hour*3600
 
         grantedtime = -1
         while grantedtime < t:
-            grantedtime = h.helicsFederateRequestTime (fed, t)
+            grantedtime = h.helicsFederateRequestTime(fed, t)
         time.sleep(0.1)
 
         #######################   Subscribing   ############################

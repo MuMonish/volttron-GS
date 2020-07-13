@@ -1,10 +1,10 @@
 # file...... LoadFlowResult_CASPB.csv
-# date...... Fri Apr 17 16:07:32 2020
+# date...... Mon Jul 13 11:32:20 2020
 # user...... nathan
 # host...... (null)
-# target.... meter 1364
+# target.... meter 51
 # trigger... (none)
 # interval.. -1
 # limit..... 0
 # timestamp,measured_power, measured_power_A, measured_power_B, measured_power_C
-2017-01-18 00:00:00 PST,+6.68735e+06+0.268394d,+2.22912e+06+0.268371d,+2.22912e+06+0.268485d,+2.22911e+06+0.268327d
+2004-01-18 00:00:00 PST,+6.68735e+06+0.268395d,+2.22912e+06+0.268372d,+2.22912e+06+0.268486d,+2.22911e+06+0.268328d
