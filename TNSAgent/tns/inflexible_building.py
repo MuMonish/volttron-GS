@@ -50,9 +50,9 @@ class InflexibleBuilding(LocalAssetModel):
             self.defaultVertices[i] = [self.activeVertices[i][0]]
             self.defaultPower[i] = self.activeVertices[i][0].value.power
 
-    def get_vertices_from_inflexible_CESI_building(self,mkt):
+    def get_vertices_from_inflexible_CESI_building(self, mkt):
         inflexible_building_folder = os.getcwd() + '/buildings/'
-        csv_name =self.name + '_buildings.csv'
+        csv_name = self.name + '_buildings.csv'
         filename = inflexible_building_folder+csv_name
         self.activeVertices = {}
         with open(filename) as file:

@@ -55,7 +55,7 @@ mTN.meterpoints = [SCUE_meter]
 PullmanTemperatureForecast = TemperatureForecastModel()
 ISM = PullmanTemperatureForecast
 ISM.name = 'PullmanTemperatureForecast'
-ISM.predictedValues = [] # dynamically assigned
+ISM.predictedValues = []  # dynamically assigned
 
 mTN.informationServiceModels = [PullmanTemperatureForecast]
 
@@ -127,29 +127,30 @@ NB.model = NBM
 Centralized_Dispatcher = NB
 Centralized_Dispatcher_Model = NBM
 
-#create list of transactive neighbors to my transactive node
+# create list of transactive neighbors to my transactive node
 mTN.neighbors = [Centralized_Dispatcher]
 
-##################### Asset  Modelling  ########################################
-## instantiate each LocalAsset and its LocalAssetModel
+# #################### Asset  Modelling  ########################################
+# # instantiate each LocalAsset and its LocalAssetModel
 # a LocalAsset is "owned" by myTransactiveNode and is managed
 # and represented by a LocalAssetModel. There must be a one to one
 # correspondence between a model and its asset
-##################### Asset  #1  ###############################################
+# #################### Asset  #1  ###############################################
 SCUE = LocalAsset()
 LA = SCUE
 LA.name = 'SCUE'
-LA.description = 'Smith Center for Undergraduate Education: a new building with flexible loads'
-LA.maximumPower = [0,0,0] # load is negative power [kW] and this building has no production capacity
+LA.description = 'Smith Center for Undergraduate Education: a new building with flexible loads (inflexible in this base case)'
+LA.maximumPower = [0, 0, 0] # load is negative power [kW] and this building has no production capacity
 LA.minimimumPower = [-10000, -10000, -10000]
 
-SCUEModel = FlexibleBuilding()
+SCUEModel = InflexibleBuilding()  # FlexibleBuilding()
 LAM = SCUEModel
 LAM.name = 'SCUE'
 LAM.defaultPower = [-100.0, -100.0, -100.0]
 LAM.thermalAuction = [Centralized_Dispatcher]
 #LAM.create_default_vertices(ti, dayAhead)# when creating flexibility, the first vertex should be largest demand
-LAM.get_vertices_from_CESI_building(dayAhead)
+# LAM.get_vertices_from_CESI_building(dayAhead)  # This line is only used if the building is flexible.
+LAM.get_vertices_from_inflexible_CESI_building(dayAhead)  # In the base case, SCUE is inflexible.
 LA.model = LAM
 LAM.object = LA
 SCUE = LA
@@ -160,8 +161,8 @@ Johnson_Hall = LocalAsset()
 LA = Johnson_Hall
 LA.name = 'JohnsonHall'
 LA.description = 'Inflexible buildings with electric, heating, and cooling loads'
-LA.maximumPower = [0,0,0]
-LA.minimumPower = [-1000,-1000,-1000]
+LA.maximumPower = [0, 0, 0]
+LA.minimumPower = [-1000, -1000, -1000]
 
 Johnson_Hall_Model = InflexibleBuilding()
 LAM = Johnson_Hall_Model
@@ -175,13 +176,13 @@ LAM.object = LA
 Johnson_Hall = LA
 Johnson_Hall_Model = LAM
 ################################################################################
-##################### Asset  #3  ###############################################
+# #################### Asset  #3  ###############################################
 Vault3_Building = LocalAsset()
 LA = Vault3_Building
 LA.name = 'Vault3'
 LA.description = 'Inflexible buildings with electric, heating, and cooling loads'
-LA.maximumPower = [0,0,0]
-LA.minimumPower = [-1000,-1000,-1000]
+LA.maximumPower = [0, 0, 0]
+LA.minimumPower = [-1000, -1000, -1000]
 
 Vault3_Building_Model = InflexibleBuilding()
 LAM = Vault3_Building_Model
@@ -195,13 +196,13 @@ LAM.object = LA
 Vault3_Building = LA
 Vault3_Building_Model = LAM
 ################################################################################
-##################### Asset  #4  ###############################################
+# #################### Asset  #4  ###############################################
 Vault5_Building = LocalAsset()
 LA = Vault5_Building
 LA.name = 'Vault5'
 LA.description = 'Inflexible buildings with electric, heating, and cooling loads'
-LA.maximumPower = [0,0,0]
-LA.minimumPower = [-1000,-1000,-1000]
+LA.maximumPower = [0, 0, 0]
+LA.minimumPower = [-1000, -1000, -1000]
 
 Vault5_Building_Model = InflexibleBuilding()
 LAM = Vault5_Building_Model
@@ -215,13 +216,13 @@ LAM.object = LA
 Vault5_Building = LA
 Vault5_Building_Model = LAM
 ################################################################################
-##################### Asset  #5  ###############################################
+# #################### Asset  #5  ###############################################
 TVW131_Buildings = LocalAsset()
 LA = TVW131_Buildings
 LA.name = 'TVW131'
 LA.description = 'Inflexible buildings with electric, heating, and cooling loads'
-LA.maximumPower = [0,0,0]
-LA.minimumPower = [-1000,-1000,-1000]
+LA.maximumPower = [0, 0, 0]
+LA.minimumPower = [-1000, -1000, -1000]
 
 TVW131_Building_Models = InflexibleBuilding()
 LAM = TVW131_Building_Models
@@ -235,13 +236,13 @@ LAM.object = LA
 TVW131_Buildings = LA
 TVW131_Building_Models = LAM
 ################################################################################
-############################   Asset  #6  ######################################
+# ###########################   Asset  #6  ######################################
 TUR117_Buildings = LocalAsset()
 LA = TUR117_Buildings
 LA.name = 'TUR117'
 LA.description = 'Inflexible buildings with electric, heating, and cooling loads'
-LA.maximumPower = [0,0,0]
-LA.minimumPower = [-1000,-1000,-1000]
+LA.maximumPower = [0, 0, 0]
+LA.minimumPower = [-1000, -1000, -1000]
 
 TUR117_Building_Models = InflexibleBuilding()
 LAM = TUR117_Building_Models
@@ -255,13 +256,13 @@ LAM.object = LA
 TUR117_Buildings = LA
 TUR117_Building_Models = LAM
 ################################################################################
-############################   Asset  #7  ######################################
+# ###########################   Asset  #7  ######################################
 TUR115_Buildings = LocalAsset()
 LA = TUR115_Buildings
 LA.name = 'TUR115'
 LA.description = 'Inflexible buildings with electric, heating, and cooling loads'
-LA.maximumPower = [0,0,0]
-LA.minimumPower = [-1000,-1000,-1000]
+LA.maximumPower = [0, 0, 0]
+LA.minimumPower = [-1000, -1000, -1000]
 
 TUR115_Building_Models = InflexibleBuilding()
 LAM = TUR115_Building_Models
@@ -275,13 +276,13 @@ LAM.object = LA
 TUR115_Buildings = LA
 TUR115_Building_Models = LAM
 ################################################################################
-############################   Asset  #8  ######################################
+# ###########################   Asset  #8  ######################################
 TUR111_Buildings = LocalAsset()
 LA = TUR111_Buildings
 LA.name = 'TUR111'
 LA.description = 'Inflexible buildings with electric, heating, and cooling loads'
-LA.maximumPower = [0,0,0]
-LA.minimumPower = [-1000,-1000,-1000]
+LA.maximumPower = [0, 0, 0]
+LA.minimumPower = [-1000, -1000, -1000]
 
 TUR111_Building_Models = InflexibleBuilding()
 LAM = TUR111_Building_Models
@@ -295,13 +296,13 @@ LAM.object = LA
 TUR111_Buildings = LA
 TUR111_Building_Models = LAM
 ################################################################################
-############################   Asset  #9  ######################################
+# ###########################   Asset  #9  ######################################
 SPU125_Buildings = LocalAsset()
 LA = SPU125_Buildings
 LA.name = 'SPU125'
 LA.description = 'Inflexible buildings with electric, heating, and cooling loads'
-LA.maximumPower = [0,0,0]
-LA.minimumPower = [-1000,-1000,-1000]
+LA.maximumPower = [0, 0, 0]
+LA.minimumPower = [-1000, -1000, -1000]
 
 SPU125_Building_Models = InflexibleBuilding()
 LAM = SPU125_Building_Models
@@ -315,13 +316,13 @@ LAM.object = LA
 SPU125_Buildings = LA
 SPU125_Building_Models = LAM
 ################################################################################
-############################   Asset  #10  ######################################
+# ###########################   Asset  #10  ######################################
 EA7_JBA_Building = LocalAsset()
 LA = EA7_JBA_Building
 LA.name = 'EA7_JBA'
 LA.description = 'Inflexible buildings with electric, heating, and cooling loads'
-LA.maximumPower = [0,0,0]
-LA.minimumPower = [-1000,-1000,-1000]
+LA.maximumPower = [0, 0, 0]
+LA.minimumPower = [-1000, -1000, -1000]
 
 EA7_JBA_Building_Model = InflexibleBuilding()
 LAM = EA7_JBA_Building_Model
@@ -335,13 +336,13 @@ LAM.object = LA
 EA7_JBA_Building = LA
 EA7_JBA_Building_Model = LAM
 ################################################################################
-############################   Asset  #11  ######################################
+# ###########################   Asset  #11  ######################################
 EA7_SPA_Building = LocalAsset()
 LA = EA7_SPA_Building
 LA.name = 'EA7_SPA'
 LA.description = 'Inflexible buildings with electric, heating, and cooling loads'
-LA.maximumPower = [0,0,0]
-LA.minimumPower = [-1000,-1000,-1000]
+LA.maximumPower = [0, 0, 0]
+LA.minimumPower = [-1000, -1000, -1000]
 
 EA7_SPA_Building_Model = InflexibleBuilding()
 LAM = EA7_SPA_Building_Model
@@ -355,13 +356,13 @@ LAM.object = LA
 EA7_SPA_Building = LA
 EA7_SPA_Building_Model = LAM
 ################################################################################
-############################   Asset  #12  ######################################
+# ###########################   Asset  #12  ######################################
 EB13_JBA_Building = LocalAsset()
 LA = EB13_JBA_Building
 LA.name = 'EB13_JBA'
 LA.description = 'Inflexible buildings with electric, heating, and cooling loads'
-LA.maximumPower = [0,0,0]
-LA.minimumPower = [-1000,-1000,-1000]
+LA.maximumPower = [0, 0, 0]
+LA.minimumPower = [-1000, -1000, -1000]
 
 EB13_JBA_Building_Model = InflexibleBuilding()
 LAM = EB13_JBA_Building_Model
@@ -375,13 +376,13 @@ LAM.object = LA
 EB13_JBA_Building = LA
 EB13_JBA_Building_Model = LAM
 ################################################################################
-############################   Asset  #13  ######################################
+# ###########################   Asset  #13  ######################################
 EB13_JBB_Building = LocalAsset()
 LA = EB13_JBB_Building
 LA.name = 'EB13_JBB'
 LA.description = 'Inflexible buildings with electric, heating, and cooling loads'
-LA.maximumPower = [0,0,0]
-LA.minimumPower = [-1000,-1000,-1000]
+LA.maximumPower = [0, 0, 0]
+LA.minimumPower = [-1000, -1000, -1000]
 
 EB13_JBB_Building_Model = InflexibleBuilding()
 LAM = EB13_JBB_Building_Model
@@ -397,7 +398,7 @@ LAM.object = LA
 EB13_JBB_Building = LA
 EB13_JBB_Building_Model = LAM
 ################################################################################
-##################### Asset  #14  ###############################################
+# #################### Asset  #14  ###############################################
 # add diesel gen
 gast1 = LocalAsset()
 gast1.name = 'GasTurbine1'
@@ -415,7 +416,7 @@ gt1Model.get_vertices_from_linear_model(dayAhead)
 gast1.model = gt1Model
 gt1Model.object = gast1
 ################################################################################
-##################### Asset  #15 ###############################################
+# #################### Asset  #15 ###############################################
 # add diesel gen
 gast2 = LocalAsset()
 gast2.name = 'GasTurbine2'
@@ -433,7 +434,7 @@ gt2Model.get_vertices_from_linear_model(dayAhead)
 gast2.model = gt2Model
 gt1Model.object = gast2
 ################################################################################
-##################### Asset  #16 ###############################################
+# #################### Asset  #16 ###############################################
 # add diesel gen
 gast3 = LocalAsset()
 gast3.name = 'GasTurbine3'
@@ -451,7 +452,7 @@ gt3Model.get_vertices_from_linear_model(dayAhead)
 gast3.model = gt3Model
 gt3Model.object = gast3
 ################################################################################
-##################### Asset  #17 ###############################################
+# #################### Asset  #17 ###############################################
 # add Gas Turbine
 gast4 = LocalAsset()
 gast4.name = 'GasTurbine4'
@@ -469,7 +470,7 @@ gt4Model.get_vertices_from_linear_model(dayAhead)
 gast4.model = gt4Model
 gt4Model.object = gast4
 ################################################################################
-##################### Asset  #18  ###############################################
+# #################### Asset  #18  ###############################################
 # Add boilers 1
 boiler1 = LocalAsset()
 boiler1.name = 'Boiler1'
@@ -486,7 +487,7 @@ boiler1Model.get_vertices_from_linear_model(dayAhead)
 boiler1.model = boiler1Model
 boiler1Model.object = boiler1
 ################################################################################
-########################## Asset  #19, #20,#21,#22, ##########################
+# ######################### Asset  #19, #20,#21,#22, ##########################
 # add boiler 2
 boiler2 = copy.deepcopy(boiler1)
 boiler2.name = 'Boiler2'
@@ -508,7 +509,7 @@ boiler5.name = 'Boiler5'
 boiler5.model.name = 'Boiler5'
 boiler5.description = '5th boiler at CASP'
 ################################################################################
-##################### Asset  #23  ##############################################
+# #################### Asset  #23  ##############################################
 # add Gas Turbine
 chiller1 = LocalAsset()
 chiller1.name = 'Chiller1'
@@ -526,7 +527,7 @@ chiller1Model.get_vertices_from_linear_model(dayAhead)
 chiller1.model = chiller1Model
 chiller1Model.object = chiller1
 ################################################################################
-##################### Asset  #24  ##############################################
+# #################### Asset  #24  ##############################################
 chiller2 = LocalAsset()
 chiller2.name = 'Chiller2'
 chiller2.description = 'york chiller 1'
@@ -543,7 +544,7 @@ chiller2Model.get_vertices_from_linear_model(dayAhead)
 chiller2.model = chiller2Model
 chiller2Model.object = chiller2
 ################################################################################
-##################### Asset  #25  ##############################################
+# #################### Asset  #25  ##############################################
 chiller3 = LocalAsset()
 chiller3.name = 'Chiller3'
 chiller3.description = 'york chiller 3'
@@ -560,7 +561,7 @@ chiller3Model.get_vertices_from_linear_model(dayAhead)
 chiller3.model = chiller3Model
 chiller3Model.object = chiller3
 ################################################################################
-##################### Asset  #26  ##############################################
+# #################### Asset  #26  ##############################################
 chiller4 = LocalAsset()
 chiller4.name = 'Chiller4'
 chiller4.description = 'carrier chiller 2'
@@ -577,7 +578,7 @@ chiller4Model.get_vertices_from_linear_model(dayAhead)
 chiller4.model = chiller4Model
 chiller4Model.object = chiller4
 ################################################################################
-##################### Asset  #27  ##############################################
+# #################### Asset  #27  ##############################################
 chiller5 = LocalAsset()
 chiller5.name = 'Chiller5'
 chiller5.description = 'Carrier Chiller3'
@@ -594,7 +595,7 @@ chiller5Model.get_vertices_from_linear_model(dayAhead)
 chiller5.model = chiller5Model
 chiller5Model.object = chiller5
 ################################################################################
-##################### Asset  #28  ##############################################
+# #################### Asset  #28  ##############################################
 chiller6 = LocalAsset()
 chiller6.name = 'Chiller6'
 chiller6.description = 'Carrier Chiller4'
@@ -611,7 +612,7 @@ chiller6Model.get_vertices_from_linear_model(dayAhead)
 chiller6.model = chiller6Model
 chiller6Model.object = chiller6
 ################################################################################
-##################### Asset  #29  ##############################################
+# #################### Asset  #29  ##############################################
 chiller7 = LocalAsset()
 chiller7.name = 'Chiller7'
 chiller7.description = 'Carrier Chiller7'
@@ -628,7 +629,7 @@ chiller7Model.get_vertices_from_linear_model(dayAhead)
 chiller7.model = chiller7Model
 chiller7Model.object = chiller7
 ################################################################################
-##################### Asset  #30  ##############################################
+# #################### Asset  #30  ##############################################
 chiller8 = LocalAsset()
 chiller8.name = 'Chiller8'
 chiller8.description = 'Carrier Chiller8'
@@ -645,7 +646,7 @@ chiller8Model.get_vertices_from_linear_model(dayAhead)
 chiller8.model = chiller8Model
 chiller8Model.object = chiller8
 ################################################################################
-##################### Asset  #31  ##############################################
+# #################### Asset  #31  ##############################################
 chiller9 = LocalAsset()
 chiller9.name = 'Chiller9'
 chiller9.description = 'Trane Chiller'
@@ -664,8 +665,10 @@ chiller9Model.object = chiller9
 
 
 ################################################################################
-mTN.localAssets = [SCUE, Johnson_Hall, Vault3_Building, Vault5_Building, TVW131_Buildings, TUR117_Buildings, TUR115_Buildings, TUR111_Buildings, SPU125_Buildings, EA7_JBA_Building, EA7_SPA_Building, EB13_JBA_Building, EB13_JBB_Building, \
-                   gast1, gast2, gast3, gast4, boiler1, boiler2, boiler3, boiler4, boiler5, chiller1, chiller2, chiller3, chiller4, chiller5, chiller6, chiller7, chiller8, chiller9]
+mTN.localAssets = [SCUE, Johnson_Hall, Vault3_Building, Vault5_Building, TVW131_Buildings, TUR117_Buildings,
+                   TUR115_Buildings, TUR111_Buildings, SPU125_Buildings, EA7_JBA_Building, EA7_SPA_Building,
+                   EB13_JBA_Building, EB13_JBB_Building, gast1, gast2, gast3, gast4, boiler1, boiler2, boiler3, boiler4,
+                   boiler5, chiller1, chiller2, chiller3, chiller4, chiller5, chiller6, chiller7, chiller8, chiller9]
 ################################################################################
 
 ## Additional setup script
@@ -675,13 +678,21 @@ mTN.localAssets = [SCUE, Johnson_Hall, Vault3_Building, Vault5_Building, TVW131_
 
 #############################################################################
 ########################## Intialize Helics  ################################
-broker = create_broker()
 name_neighbors = []
+gld_helics_objects = [SCUE, Johnson_Hall, Vault3_Building, Vault5_Building, TVW131_Buildings, TUR117_Buildings,
+                      TUR115_Buildings, TUR111_Buildings, SPU125_Buildings, EA7_JBA_Building, EA7_SPA_Building,
+                      EB13_JBA_Building, EB13_JBB_Building, gast1, gast2, gast3, gast4, chiller1, chiller2, chiller3,
+                      chiller4, chiller5, chiller6, chiller7, chiller8, chiller9]
 #json_filename = create_config_for_helics(mTN.name, [mTN.neighbors[i].name for i in range(len(mTN.neighbors))])
 #json_filename = create_config_for_helics(dayAhead.name, [mTN.localAssets[0].name], [mTN.localAssets[i].name for i in range(len(mTN.localAssets))], [3 for i in range(len(mTN.localAssets))], config_for_gridlabd = True)
-json_filename = create_config_for_helics(dayAhead.name, [mTN.localAssets[0].name], [mTN.localAssets[i].name for i in range(len(mTN.localAssets))], [3 for i in range(len(mTN.localAssets))], config_for_gridlabd = True)
+json_filename = create_config_for_helics(dayAhead.name,
+                                         [mTN.localAssets[0].name],
+                                         gridlabd_nodes=gld_helics_objects,
+                                         node_phase=[3 for i in range(len(mTN.localAssets))],
+                                         config_for_gridlabd=True)
 
 print(json_filename)
+broker = create_broker(number_federates=3)
 fed = register_federate(json_filename)
 status = h.helicsFederateEnterInitializingMode(fed)
 status = h.helicsFederateEnterExecutingMode(fed)

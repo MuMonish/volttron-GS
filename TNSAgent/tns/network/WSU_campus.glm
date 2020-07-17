@@ -26474,7 +26474,7 @@ object load {
 	impedance_fraction_A 0.40;
 	nominal_voltage 7970.00;
 }
-
+// TODO: What is this?
 object load {
 	name Large_customer_389-1474387-0;
 	parent 406-1032405;
@@ -26544,7 +26544,7 @@ object load {
 }
 
 object load {
-	name TUR115_buildings;
+	name TUR115_load;
 	parent CASPA;
 	phases ABCN;
 	constant_power_A 1779 kVA;
@@ -26554,7 +26554,7 @@ object load {
 }
 
 object load {
-	name SPU125_buildings;
+	name SPU125_load;
 	parent CASPB;
 	phases ABCN;
 	constant_power_A 1094.3 kVA;
@@ -26564,37 +26564,97 @@ object load {
 }
 
 object load {
-	name ch1;
+	name Chiller1_load;  // Carrier Chiller 1: 7279.9 kWc, 1238 kWe
 	parent WChillers;
 	phases ABCN;
-	constant_power_A 375.1 kVA;
-	constant_power_B 375.1 kVA;
-	constant_power_C 375.1 kVA;
+	constant_power_A 412.7 kVA;
+	constant_power_B 412.7 kVA;
+	constant_power_C 412.7 kVA;
 	nominal_voltage 2401.78;
 }
 
 object load {
-	name ch2;
+	name Chiller2_load;  // York Chiller 1: 5268.2 kWc, 1123.5 kWe
 	parent WChillers;
 	phases ABCN;
-	constant_power_A 375.1 kVA;
-	constant_power_B 375.1 kVA;
-	constant_power_C 375.1 kVA;
+	constant_power_A 374.5 kVA;
+	constant_power_B 374.5 kVA;
+	constant_power_C 374.5 kVA;
 	nominal_voltage 2401.78;
 }
 
 object load {
-	name ch3;
+	name Chiller3_load;  // York Chiller 3: 5268.2 kWc, 1123.5 kWe
 	parent WChillers;
 	phases ABCN;
-	constant_power_A 375.1 kVA;
-	constant_power_B 375.1 kVA;
-	constant_power_C 375.1 kVA;
+	constant_power_A 374.5 kVA;
+	constant_power_B 374.5 kVA;
+	constant_power_C 374.5 kVA;
 	nominal_voltage 2401.78;
 }
 
 object load {
-	name EA7_JBA_buildings;
+	name Chiller4_load;  // Carrier Chiller 2: 4853.3 kWc, 496.8 kWe
+	parent ClarkHallChillers;
+	phases ABCN;
+	constant_power_A 165.6 kVA;
+	constant_power_B 165.6 kVA;
+	constant_power_C 165.6 kVA;
+	nominal_voltage 2401.78;
+}
+
+object load {
+	name Chiller5_load;  // Carrier Chiller 3: 4853.3 kWc, 496.8 kWe
+	parent ClarkHallChillers;
+	phases ABCN;
+	constant_power_A 165.6 kVA;
+	constant_power_B 165.6 kVA;
+	constant_power_C 165.6 kVA;
+	nominal_voltage 2401.78;
+}
+
+object load {
+	name Chiller6_load;  // Carrier Chiller 4: 1758.4 kWc, 1146.53 kWe​
+	parent JohnsonHall;
+	phases ABCN;
+	constant_power_A 382.2 kVA;
+	constant_power_B 382.2 kVA;
+	constant_power_C 382.2 kVA;
+	nominal_voltage 2401.78;
+}
+
+object load {
+	name Chiller7_load;  // Carrier Chiller 7: 5275.3 kWc, 958.0963 kWe​
+	parent TV131_EChillers;
+	phases ABCN;
+	constant_power_A 319.3 kVA;
+	constant_power_B 319.3 kVA;
+	constant_power_C 319.3 kVA;
+	nominal_voltage 2401.78;
+}
+
+object load {
+	name Chiller8_load;  // Carrier Chiller 8: 5275.3 kWc, 958.0963 kWe​
+	parent TV131_EChillers;
+	phases ABCN;
+	constant_power_A 319.3 kVA;
+	constant_power_B 319.3 kVA;
+	constant_power_C 319.3 kVA;
+	nominal_voltage 2401.78;
+}
+
+object load {
+	name Chiller9_load;  // Trane Chiller: 1415.5 kWc, 309.9 kWe
+	parent JohnsonHall;
+	phases ABCN;
+	constant_power_A 103.3 kVA;
+	constant_power_B 103.3 kVA;
+	constant_power_C 103.3 kVA;
+	nominal_voltage 2401.78;
+}
+
+object load {
+	name EA7_JBA_load;
 	parent EA7_JB-A;
 	phases ABCN;
 	constant_power_A 109 kVA;
@@ -26604,7 +26664,7 @@ object load {
 }
 
 object load {
-	name EA7_SPA_buildings;
+	name EA7_SPA_load;
 	parent EA7_SP-A;
 	phases ABCN;
 	constant_power_A 20 kVA;
@@ -26614,7 +26674,7 @@ object load {
 }
 
 object load {
-	name ch4;
+	name JohnsonHall_load;
 	parent JohnsonHall;
 	phases ABCN;
 	constant_power_A 99.3 kVA;
@@ -26624,47 +26684,7 @@ object load {
 }
 
 object load {
-	name ch5;
-	parent JohnsonHall;
-	phases ABCN;
-	constant_power_A 99.3 kVA;
-	constant_power_B 99.3 kVA;
-	constant_power_C 99.3 kVA;
-	nominal_voltage 2401.78;
-}
-
-object load {
-	name ch8;
-	parent JohnsonHall;
-	phases ABCN;
-	constant_power_A 99.3 kVA;
-	constant_power_B 99.3 kVA;
-	constant_power_C 99.3 kVA;
-	nominal_voltage 2401.78;
-}
-
-object load {
-	name ch9;
-	parent JohnsonHall;
-	phases ABCN;
-	constant_power_A 99.3 kVA;
-	constant_power_B 99.3 kVA;
-	constant_power_C 99.3 kVA;
-	nominal_voltage 2401.78;
-}
-
-object load {
-	name JohnsonHall_buildings;
-	parent JohnsonHall;
-	phases ABCN;
-	constant_power_A 99.3 kVA;
-	constant_power_B 99.3 kVA;
-	constant_power_C 99.3 kVA;
-	nominal_voltage 2401.78;
-}
-
-object load {
-	name Vault5_buildings;
+	name Vault5_load;
 	parent EB13_Vault5;
 	phases ABCN;
 	constant_power_A 171 kVA;
@@ -26674,7 +26694,7 @@ object load {
 }
 
 object load {
-	name Vault3_buildings;
+	name Vault3_load;
 	parent EB13_Vault3;
 	phases ABCN;
 	constant_power_A 4.8 kVA;
@@ -26684,7 +26704,7 @@ object load {
 }
 
 object load {
-	name EB13_JBB_buildings;
+	name EB13_JBB_load;
 	parent EB13_JB-B;
 	phases ABCN;
 	constant_power_A 1.9 kVA;
@@ -26694,7 +26714,7 @@ object load {
 }
 
 object load {
-	name EB13_JBA_buildings;
+	name EB13_JBA_load;
 	parent EB13_JB-A;
 	phases ABCN;
 	constant_power_A 5.8 kVA;
@@ -26704,7 +26724,7 @@ object load {
 }
 
 object load {
-	name TUR117_buildings;
+	name TUR117_load;
 	parent ResearchPark;
 	phases ABCN;
 	constant_power_A 81.7 kVA;
@@ -26714,7 +26734,7 @@ object load {
 }
 
 object load {
-	name TVW131_buildings;
+	name TVW131_load;
 	parent TV131_EChillers;
 	phases ABCN;
 	constant_power_A 81.7 kVA;
@@ -26724,7 +26744,7 @@ object load {
 }
 
 object load {
-	name TUR111_buildings;
+	name TUR111_load;
 	parent 406-1032405;
 	phases ABCN;
 	constant_power_A 81.7 kVA;
@@ -26734,7 +26754,17 @@ object load {
 }
 
 object load {
-	name gt1;
+	name SCUE_load;
+	parent 406-1032405;
+	phases ABCN;
+	constant_power_A 81.7 kVA;
+	constant_power_B 81.7 kVA;
+	constant_power_C 81.7 kVA;
+	nominal_voltage 7970.00;
+}
+
+object load {
+	name GasTurbine1_load;  // in reality this turbine is out of service
 	parent CASPA;
 	phases ABCN;
 	nominal_voltage 2401.78;
@@ -26744,7 +26774,7 @@ object load {
 }
 
 object load {
-	name gt2;
+	name GasTurbine2_load;
 	parent GWSP-B;
 	phases ABCN;
 	nominal_voltage 2401.78;
@@ -26754,7 +26784,7 @@ object load {
 }
 
 object load {
-	name gt3;
+	name GasTurbine3_load;
 	parent GWSP-B;
 	phases ABCN;
 	nominal_voltage 2401.78;
@@ -26764,7 +26794,7 @@ object load {
 }
 
 object load {
-	name gt4;
+	name GasTurbine4_load;
 	parent GWSP-A;
 	phases ABCN;
 	nominal_voltage 2401.78;
@@ -26967,11 +26997,11 @@ object recorder {
 }
 
 object recorder {
-	name Vault3_buildings_load;
-	parent Vault3_buildings;
+	name Vault3_load_recorder;
+	parent Vault3_load;
 	property constant_power_A, constant_power_B, constant_power_C;
 	interval 600;
-	file TotalPower_Vault3_buildings.csv;
+	file TotalPower_Vault3_load.csv;
 }
 
 object currdump {

@@ -1,338 +1,239 @@
 {
-    "name" : "DistributionSim",
-	"loglevel": 5,
-	"coreType": "zmq",
-	"period" : 1.0,
-     "subscriptions" : [
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_Vault3_power_A",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"Vault3_buildings\",
-                    \"property\" : \"constant_power_A\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_Vault3_power_B",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"Vault3_buildings\",
-                    \"property\" : \"constant_power_B\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_Vault3_power_C",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"Vault3_buildings\",
-                    \"property\" : \"constant_power_C\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_Vault5_power_A",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"Vault5_buildings\",
-                    \"property\" : \"constant_power_A\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_Vault5_power_B",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"Vault5_buildings\",
-                    \"property\" : \"constant_power_B\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_Vault5_power_C",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"Vault5_buildings\",
-                    \"property\" : \"constant_power_C\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_TVW131_power_A",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"TVW131_buildings\",
-                    \"property\" : \"constant_power_A\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_TVW131_power_B",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"TVW131_buildings\",
-                    \"property\" : \"constant_power_B\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_TVW131_power_C",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"TVW131_buildings\",
-                    \"property\" : \"constant_power_C\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_TUR117_power_A",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"TUR117_buildings\",
-                    \"property\" : \"constant_power_A\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_TUR117_power_B",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"TUR117_buildings\",
-                    \"property\" : \"constant_power_B\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_TUR117_power_C",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"TUR117_buildings\",
-                    \"property\" : \"constant_power_C\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_TUR115_power_A",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"TUR115_buildings\",
-                    \"property\" : \"constant_power_A\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_TUR115_power_B",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"TUR115_buildings\",
-                    \"property\" : \"constant_power_B\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_TUR115_power_C",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"TUR115_buildings\",
-                    \"property\" : \"constant_power_C\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_TUR111_power_A",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"TUR111_buildings\",
-                    \"property\" : \"constant_power_A\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_TUR111_power_B",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"TUR111_buildings\",
-                    \"property\" : \"constant_power_B\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_TUR111_power_C",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"TUR111_buildings\",
-                    \"property\" : \"constant_power_C\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_SPU125_power_A",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"SPU125_buildings\",
-                    \"property\" : \"constant_power_A\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_SPU125_power_B",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"SPU125_buildings\",
-                    \"property\" : \"constant_power_B\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_SPU125_power_C",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"SPU125_buildings\",
-                    \"property\" : \"constant_power_C\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_EA7_JBA_power_A",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"EA7_JBA_buildings\",
-                    \"property\" : \"constant_power_A\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_EA7_JBA_power_B",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"EA7_JBA_buildings\",
-                    \"property\" : \"constant_power_B\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_EA7_JBA_power_C",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"EA7_JBA_buildings\",
-                    \"property\" : \"constant_power_C\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_EA7_SPA_power_A",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"EA7_SPA_buildings\",
-                    \"property\" : \"constant_power_A\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_EA7_SPA_power_B",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"EA7_SPA_buildings\",
-                    \"property\" : \"constant_power_B\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_EA7_SPA_power_C",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"EA7_SPA_buildings\",
-                    \"property\" : \"constant_power_C\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_EB13_JBA_power_A",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"EB13_JBA_buildings\",
-                    \"property\" : \"constant_power_A\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_EB13_JBA_power_B",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"EB13_JBA_buildings\",
-                    \"property\" : \"constant_power_B\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_EB13_JBA_power_C",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"EB13_JBA_buildings\",
-                    \"property\" : \"constant_power_C\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_EB13_JBB_power_A",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"EB13_JBB_buildings\",
-                    \"property\" : \"constant_power_A\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_EB13_JBB_power_B",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"EB13_JBB_buildings\",
-                    \"property\" : \"constant_power_B\"
-					}"
-          },
-          {
-               "required": true,
-			   "key" : "WSU_C_GLD_EB13_JBB_power_C",
-               "type" : "complex",
-               "unit" : "VA",
-               "info" : "{
-                    \"object\" : \"EB13_JBB_buildings\",
-                    \"property\" : \"constant_power_C\"
-					}"
-          }
-     ]
+  "name": "GLD",
+  "loglevel": 5,
+  "coreType": "zmq",
+  "period": 1.0,
+  "subscriptions": [
+    {
+      "key": "WSU_C_GLD_Vault3_power_A",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"Vault3_buildings\", \"property\" : \"constant_power_A\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_Vault3_power_B",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"Vault3_buildings\", \"property\" : \"constant_power_B\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_Vault3_power_C",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"Vault3_buildings\", \"property\" : \"constant_power_C\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_Vault5_power_A",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"Vault5_buildings\", \"property\" : \"constant_power_A\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_Vault5_power_B",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"Vault5_buildings\", \"property\" : \"constant_power_B\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_Vault5_power_C",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"Vault5_buildings\", \"property\" : \"constant_power_C\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_TVW131_power_A",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"TVW131_buildings\", \"property\" : \"constant_power_A\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_TVW131_power_B",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"TVW131_buildings\", \"property\" : \"constant_power_B\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_TVW131_power_C",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"TVW131_buildings\", \"property\" : \"constant_power_C\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_TUR117_power_A",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"TUR117_buildings\", \"property\" : \"constant_power_A\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_TUR117_power_B",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"TUR117_buildings\", \"property\" : \"constant_power_B\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_TUR117_power_C",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"TUR117_buildings\", \"property\" : \"constant_power_C\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_TUR115_power_A",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"TUR115_buildings\", \"property\" : \"constant_power_A\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_TUR115_power_B",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"TUR115_buildings\", \"property\" : \"constant_power_B\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_TUR115_power_C",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"TUR115_buildings\", \"property\" : \"constant_power_C\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_TUR111_power_A",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"TUR111_buildings\", \"property\" : \"constant_power_A\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_TUR111_power_B",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"TUR111_buildings\", \"property\" : \"constant_power_B\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_TUR111_power_C",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"TUR111_buildings\", \"property\" : \"constant_power_C\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_SPU125_power_A",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"SPU125_buildings\", \"property\" : \"constant_power_A\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_SPU125_power_B",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"SPU125_buildings\", \"property\" : \"constant_power_B\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_SPU125_power_C",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"SPU125_buildings\", \"property\" : \"constant_power_C\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_EA7_JBA_power_A",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"EA7_JBA_buildings\", \"property\" : \"constant_power_A\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_EA7_JBA_power_B",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"EA7_JBA_buildings\", \"property\" : \"constant_power_B\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_EA7_JBA_power_C",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"EA7_JBA_buildings\", \"property\" : \"constant_power_C\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_EA7_SPA_power_A",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"EA7_SPA_buildings\", \"property\" : \"constant_power_A\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_EA7_SPA_power_B",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"EA7_SPA_buildings\", \"property\" : \"constant_power_B\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_EA7_SPA_power_C",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"EA7_SPA_buildings\", \"property\" : \"constant_power_C\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_EB13_JBA_power_A",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"EB13_JBA_buildings\", \"property\" : \"constant_power_A\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_EB13_JBA_power_B",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"EB13_JBA_buildings\", \"property\" : \"constant_power_B\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_EB13_JBA_power_C",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"EB13_JBA_buildings\", \"property\" : \"constant_power_C\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_EB13_JBB_power_A",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"EB13_JBB_buildings\", \"property\" : \"constant_power_A\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_EB13_JBB_power_B",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"EB13_JBB_buildings\", \"property\" : \"constant_power_B\"}",
+      "required": true
+    },
+    {
+      "key": "WSU_C_GLD_EB13_JBB_power_C",
+      "type": "complex",
+      "unit": "VA",
+      "info": "{\"object\" : \"EB13_JBB_buildings\", \"property\" : \"constant_power_C\"}",
+      "required": true
+    }
+  ]
 }

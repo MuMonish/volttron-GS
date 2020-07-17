@@ -11,168 +11,393 @@
             "type": "string"
         },
         {
+            "key": "WSU_C_GLD_SCUE_power_A",
             "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_SCUE_power_B",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_SCUE_power_C",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_JohnsonHall_power_A",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_JohnsonHall_power_B",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_JohnsonHall_power_C",
+            "global": true,
+            "type": "complex"
+        },
+        {
             "key": "WSU_C_GLD_Vault3_power_A",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_Vault3_power_B",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_Vault3_power_C",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_Vault5_power_A",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_Vault5_power_B",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_Vault5_power_C",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_TVW131_power_A",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_TVW131_power_B",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_TVW131_power_C",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_TUR117_power_A",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_TUR117_power_B",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_TUR117_power_C",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_TUR115_power_A",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_TUR115_power_B",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_TUR115_power_C",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_TUR111_power_A",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_TUR111_power_B",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_TUR111_power_C",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_SPU125_power_A",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_SPU125_power_B",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_SPU125_power_C",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_EA7_JBA_power_A",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_EA7_JBA_power_B",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_EA7_JBA_power_C",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_EA7_SPA_power_A",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_EA7_SPA_power_B",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_EA7_SPA_power_C",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_EB13_JBA_power_A",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_EB13_JBA_power_B",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_EB13_JBA_power_C",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_EB13_JBB_power_A",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_EB13_JBB_power_B",
+            "global": true,
             "type": "complex"
         },
         {
-            "global": true,
             "key": "WSU_C_GLD_EB13_JBB_power_C",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_GasTurbine1_power_A",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_GasTurbine1_power_B",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_GasTurbine1_power_C",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_GasTurbine2_power_A",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_GasTurbine2_power_B",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_GasTurbine2_power_C",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_GasTurbine3_power_A",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_GasTurbine3_power_B",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_GasTurbine3_power_C",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_GasTurbine4_power_A",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_GasTurbine4_power_B",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_GasTurbine4_power_C",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller1_power_A",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller1_power_B",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller1_power_C",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller2_power_A",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller2_power_B",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller2_power_C",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller3_power_A",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller3_power_B",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller3_power_C",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller4_power_A",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller4_power_B",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller4_power_C",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller5_power_A",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller5_power_B",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller5_power_C",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller6_power_A",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller6_power_B",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller6_power_C",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller7_power_A",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller7_power_B",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller7_power_C",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller8_power_A",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller8_power_B",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller8_power_C",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller9_power_A",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller9_power_B",
+            "global": true,
+            "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_Chiller9_power_C",
+            "global": true,
             "type": "complex"
         }
     ],

@@ -7,12 +7,13 @@ import json
 import sys
 import os
 
-#################################  Create Broker ###############################
-def create_broker():
+
+# ################################  Create Broker ###############################
+def create_broker(number_federates=3):
     logger = logging.getLogger(__name__)
     logger.addHandler(logging.StreamHandler())
     logger.setLevel(logging.DEBUG)
-    initstring = "--federates=3 --name=mainbroker"
+    initstring = "--federates={} --name=mainbroker".format(number_federates)
     broker = h.helicsCreateBroker("zmq", "", initstring)
     isconnected = h.helicsBrokerIsConnected(broker)
 
@@ -20,9 +21,11 @@ def create_broker():
         pass
 
     return broker
-############################## register federate ###############################
+
+
+# ############################# register federate ###############################
 def register_federate(json_filename):
-    print('register_federate -->',json_filename)
+    print('register_federate -->', json_filename)
     fed = h.helicsCreateValueFederateFromConfig(json_filename)
     status = h.helicsFederateRegisterInterfaces(fed, json_filename)
     federate_name = h.helicsFederateGetName(fed)[-1]
@@ -31,67 +34,89 @@ def register_federate(json_filename):
     subkeys_count = h.helicsFederateGetInputCount(fed)
     print(pubkeys_count)
     print(subkeys_count)
-    ######################   Reference to Publications and Subscription form index  #############################
+    # #####################   Reference to Publications and Subscription form index  #############################
     pubid = {}
     subid = {}
-    for i in range(0,pubkeys_count):
+    for i in range(0, pubkeys_count):
         pubid["m{}".format(i)] = h.helicsFederateGetPublicationByIndex(fed, i)
         pub_type = h.helicsPublicationGetType(pubid["m{}".format(i)])
         pub_key = h.helicsPublicationGetKey(pubid["m{}".format(i)])
-        print( 'Registered Publication ---> {} - Type {}'.format(pub_key, pub_type))
-    for i in range(0,subkeys_count):
+        print('Registered Publication ---> {} - Type {}'.format(pub_key, pub_type))
+    for i in range(0, subkeys_count):
         subid["m{}".format(i)] = h.helicsFederateGetInputByIndex(fed, i)
         status = h.helicsInputSetDefaultString(subid["m{}".format(i)], 'default')
         sub_key = h.helicsSubscriptionGetKey(subid["m{}".format(i)])
-        print( 'Registered Subscription ---> {}'.format(sub_key))
+        print('Registered Subscription ---> {}'.format(sub_key))
 
     return fed
 
-def create_config_for_helics(source_node,target_node, gridlabd_nodes = [], node_phase = 0, config_for_gridlabd = bool(False)):
+
+def create_config_for_helics(source_node, target_bldg_model, gridlabd_nodes=[], node_phase=0,
+                             config_for_gridlabd=bool(False)):
     if len(source_node) > 5:
         source_node = source_node[0:5]  # source_node(1:5)
 
     # Shorten the name of the target node
-    for i in range(len(target_node)):
-        if len(target_node[i]) > 5:
-            target_node[i] = target_node[i][0:5]  # target_node(1:5)
+    for i in range(len(target_bldg_model)):
+        if len(target_bldg_model[i]) > 5:
+            target_bldg_model[i] = target_bldg_model[i][0:5]  # target_node(1:5)
 
     config = {}
+    gld_config = {}
     config['name'] = source_node
     config['loglevel'] = 7
     config['coreType'] = str('zmq')
     config['timeDelta'] = 1.0
     config['uninterruptible'] = bool('true')
 
+    if config_for_gridlabd:
+        gld_config['name'] = "GLD"
+        gld_config['loglevel'] = 5
+        gld_config['coreType'] = str('zmq')
+        gld_config['period'] = 1.0
+        gld_config['subscriptions'] = []
+
     config['publications'] = []
-    for i in range(len(target_node)):
+    for i in range(len(target_bldg_model)):
         config['publications'].append({'global': bool('true'),
-                                       'key': str(source_node+'_'+target_node[i]),
+                                       'key': str(source_node + '_' + target_bldg_model[i]),
                                        'type': str('string')})
 
     config['subscriptions'] = []
-    for i in range(len(target_node)):
+    for i in range(len(target_bldg_model)):
         config['subscriptions'].append({'required': bool('true'),
-                                       'key': str(target_node[i]+'_'+source_node),
-                                       'type': str('string')})
+                                        'key': str(target_bldg_model[i] + '_' + source_node),
+                                        'type': str('string')})
 
-    if config_for_gridlabd == True:
+    if config_for_gridlabd:
         phases = ['A', 'B', 'C']
-        for i in range(11):
-            for j in range(len(phases)):
-                config['publications'].append({'global': bool('true'),
-                                           'key': str(source_node + '_GLD_' + gridlabd_nodes[i+2] + '_power_' + phases[j]),
-                                           'type': str('complex')})
+        for node in gridlabd_nodes:
+            for phase in phases:
+                config['publications'].append({'key': str(source_node + '_GLD_' + node.name + '_power_' + phase),
+                                               'global': bool('true'),
+                                               'type': str('complex')})
+                gld_config['subscriptions'].append({'key': str(source_node + '_GLD_' + node.name + '_power_' + phase),
+                                                    'type': str('complex'),
+                                                    'unit': "VA",
+                                                    'info': {"object": f"{node.name}_load",
+                                                             "property": f"constant_power_{phase}"}
+                                                    })
 
-    json_filename = source_node+'_config.json'
-    json_file = json.dumps(config, indent=4, separators = (',',': '))
-    fp = open(json_filename, 'w')
-    print(json_file, file = fp)
-    fp.close()
+    if config_for_gridlabd:
+        gld_json_filename = 'network/gld_config.json'
+        gld_json_file = json.dumps(gld_config, indent=4, separators=(',', ': '))
+        with open(gld_json_filename, 'w') as fp:
+            print(gld_json_file, file=fp)
+
+    json_filename = source_node + '_config.json'
+    json_file = json.dumps(config, indent=4, separators=(',', ': '))
+    with open(json_filename, 'w') as fp:
+        print(json_file, file=fp)
 
     return json_filename
 
+
 def destroy_federate(fed):
-    status = h.helicsFederateFinalize(fed)
+    h.helicsFederateFinalize(fed)
     h.helicsFederateFree(fed)
     h.helicsCloseLibrary()
