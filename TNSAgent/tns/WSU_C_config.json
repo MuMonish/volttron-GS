@@ -399,6 +399,11 @@
             "key": "WSU_C_GLD_Chiller9_power_C",
             "global": true,
             "type": "complex"
+        },
+        {
+            "key": "WSU_C_GLD_inv_researchPark_P_Out",
+            "global": true,
+            "type": "double"
         }
     ],
     "subscriptions": [

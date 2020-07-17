@@ -663,12 +663,20 @@ chiller9Model.get_vertices_from_linear_model(dayAhead)
 chiller9.model = chiller9Model
 chiller9Model.object = chiller9
 
+################################################################################
+# #################### Asset  #32  ##############################################
+solar = LocalAsset()
+solar.name = 'inv_researchPark'
+solar.description = '72kW Solar PV array at WSU Research Park'
+solar.gld_info = {'object': 'inv_researchPark', 'property': ['P_Out'], 'type': 'double'}
+
+
 
 ################################################################################
 mTN.localAssets = [SCUE, Johnson_Hall, Vault3_Building, Vault5_Building, TVW131_Buildings, TUR117_Buildings,
                    TUR115_Buildings, TUR111_Buildings, SPU125_Buildings, EA7_JBA_Building, EA7_SPA_Building,
                    EB13_JBA_Building, EB13_JBB_Building, gast1, gast2, gast3, gast4, boiler1, boiler2, boiler3, boiler4,
-                   boiler5, chiller1, chiller2, chiller3, chiller4, chiller5, chiller6, chiller7, chiller8, chiller9]
+                   boiler5, chiller1, chiller2, chiller3, chiller4, chiller5, chiller6, chiller7, chiller8, chiller9, solar]
 ################################################################################
 
 ## Additional setup script
@@ -682,12 +690,12 @@ name_neighbors = []
 gld_helics_objects = [SCUE, Johnson_Hall, Vault3_Building, Vault5_Building, TVW131_Buildings, TUR117_Buildings,
                       TUR115_Buildings, TUR111_Buildings, SPU125_Buildings, EA7_JBA_Building, EA7_SPA_Building,
                       EB13_JBA_Building, EB13_JBB_Building, gast1, gast2, gast3, gast4, chiller1, chiller2, chiller3,
-                      chiller4, chiller5, chiller6, chiller7, chiller8, chiller9]
+                      chiller4, chiller5, chiller6, chiller7, chiller8, chiller9, solar]
 #json_filename = create_config_for_helics(mTN.name, [mTN.neighbors[i].name for i in range(len(mTN.neighbors))])
 #json_filename = create_config_for_helics(dayAhead.name, [mTN.localAssets[0].name], [mTN.localAssets[i].name for i in range(len(mTN.localAssets))], [3 for i in range(len(mTN.localAssets))], config_for_gridlabd = True)
 json_filename = create_config_for_helics(dayAhead.name,
                                          [mTN.localAssets[0].name],
-                                         gridlabd_nodes=gld_helics_objects,
+                                         gridlabd_assets=gld_helics_objects,
                                          node_phase=[3 for i in range(len(mTN.localAssets))],
                                          config_for_gridlabd=True)
 

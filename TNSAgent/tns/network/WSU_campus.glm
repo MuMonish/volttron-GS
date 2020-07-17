@@ -26546,7 +26546,7 @@ object load {
 }
 
 object load {
-	name TUR115_load;
+	name TUR115_helics;
 	parent CASPA;
 	phases ABCN;
 	constant_power_A 1779 kVA;
@@ -26556,7 +26556,7 @@ object load {
 }
 
 object load {
-	name SPU125_load;
+	name SPU125_helics;
 	parent CASPB;
 	phases ABCN;
 	constant_power_A 1094.3 kVA;
@@ -26566,7 +26566,7 @@ object load {
 }
 
 object load {
-	name Chiller1_load;  // Carrier Chiller 1: 7279.9 kWc, 1238 kWe
+	name Chiller1_helics;  // Carrier Chiller 1: 7279.9 kWc, 1238 kWe
 	parent WChillers;
 	phases ABCN;
 	constant_power_A 412.7 kVA;
@@ -26576,7 +26576,7 @@ object load {
 }
 
 object load {
-	name Chiller2_load;  // York Chiller 1: 5268.2 kWc, 1123.5 kWe
+	name Chiller2_helics;  // York Chiller 1: 5268.2 kWc, 1123.5 kWe
 	parent WChillers;
 	phases ABCN;
 	constant_power_A 374.5 kVA;
@@ -26586,7 +26586,7 @@ object load {
 }
 
 object load {
-	name Chiller3_load;  // York Chiller 3: 5268.2 kWc, 1123.5 kWe
+	name Chiller3_helics;  // York Chiller 3: 5268.2 kWc, 1123.5 kWe
 	parent WChillers;
 	phases ABCN;
 	constant_power_A 374.5 kVA;
@@ -26596,7 +26596,7 @@ object load {
 }
 
 object load {
-	name Chiller4_load;  // Carrier Chiller 2: 4853.3 kWc, 496.8 kWe
+	name Chiller4_helics;  // Carrier Chiller 2: 4853.3 kWc, 496.8 kWe
 	parent ClarkHallChillers;
 	phases ABCN;
 	constant_power_A 165.6 kVA;
@@ -26606,7 +26606,7 @@ object load {
 }
 
 object load {
-	name Chiller5_load;  // Carrier Chiller 3: 4853.3 kWc, 496.8 kWe
+	name Chiller5_helics;  // Carrier Chiller 3: 4853.3 kWc, 496.8 kWe
 	parent ClarkHallChillers;
 	phases ABCN;
 	constant_power_A 165.6 kVA;
@@ -26616,7 +26616,7 @@ object load {
 }
 
 object load {
-	name Chiller6_load;  // Carrier Chiller 4: 1758.4 kWc, 1146.53 kWe​
+	name Chiller6_helics;  // Carrier Chiller 4: 1758.4 kWc, 1146.53 kWe​
 	parent JohnsonHall;
 	phases ABCN;
 	constant_power_A 382.2 kVA;
@@ -26626,7 +26626,7 @@ object load {
 }
 
 object load {
-	name Chiller7_load;  // Carrier Chiller 7: 5275.3 kWc, 958.0963 kWe​
+	name Chiller7_helics;  // Carrier Chiller 7: 5275.3 kWc, 958.0963 kWe​
 	parent TV131_EChillers;
 	phases ABCN;
 	constant_power_A 319.3 kVA;
@@ -26636,7 +26636,7 @@ object load {
 }
 
 object load {
-	name Chiller8_load;  // Carrier Chiller 8: 5275.3 kWc, 958.0963 kWe​
+	name Chiller8_helics;  // Carrier Chiller 8: 5275.3 kWc, 958.0963 kWe​
 	parent TV131_EChillers;
 	phases ABCN;
 	constant_power_A 319.3 kVA;
@@ -26646,7 +26646,7 @@ object load {
 }
 
 object load {
-	name Chiller9_load;  // Trane Chiller: 1415.5 kWc, 309.9 kWe
+	name Chiller9_helics;  // Trane Chiller: 1415.5 kWc, 309.9 kWe
 	parent JohnsonHall;
 	phases ABCN;
 	constant_power_A 103.3 kVA;
@@ -26656,7 +26656,7 @@ object load {
 }
 
 object load {
-	name EA7_JBA_load;
+	name EA7_JBA_helics;
 	parent EA7_JB-A;
 	phases ABCN;
 	constant_power_A 109 kVA;
@@ -26666,7 +26666,7 @@ object load {
 }
 
 object load {
-	name EA7_SPA_load;
+	name EA7_SPA_helics;
 	parent EA7_SP-A;
 	phases ABCN;
 	constant_power_A 20 kVA;
@@ -26676,7 +26676,7 @@ object load {
 }
 
 object load {
-	name JohnsonHall_load;
+	name JohnsonHall_helics;
 	parent JohnsonHall;
 	phases ABCN;
 	constant_power_A 99.3 kVA;
@@ -26686,7 +26686,7 @@ object load {
 }
 
 object load {
-	name Vault5_load;
+	name Vault5_helics;
 	parent EB13_Vault5;
 	phases ABCN;
 	constant_power_A 171 kVA;
@@ -26696,7 +26696,7 @@ object load {
 }
 
 object load {
-	name Vault3_load;
+	name Vault3_helics;
 	parent EB13_Vault3;
 	phases ABCN;
 	constant_power_A 4.8 kVA;
@@ -26706,7 +26706,7 @@ object load {
 }
 
 object load {
-	name EB13_JBB_load;
+	name EB13_JBB_helics;
 	parent EB13_JB-B;
 	phases ABCN;
 	constant_power_A 1.9 kVA;
@@ -26716,7 +26716,7 @@ object load {
 }
 
 object load {
-	name EB13_JBA_load;
+	name EB13_JBA_helics;
 	parent EB13_JB-A;
 	phases ABCN;
 	constant_power_A 5.8 kVA;
@@ -26726,7 +26726,7 @@ object load {
 }
 
 object load {
-	name TUR117_load;
+	name TUR117_helics;
 	parent ResearchPark;
 	phases ABCN;
 	constant_power_A 81.7 kVA;
@@ -26736,7 +26736,7 @@ object load {
 }
 
 object load {
-	name TVW131_load;
+	name TVW131_helics;
 	parent TV131_EChillers;
 	phases ABCN;
 	constant_power_A 81.7 kVA;
@@ -26746,7 +26746,7 @@ object load {
 }
 
 object load {
-	name TUR111_load;
+	name TUR111_helics;
 	parent 406-1032405;
 	phases ABCN;
 	constant_power_A 81.7 kVA;
@@ -26756,7 +26756,7 @@ object load {
 }
 
 object load {
-	name SCUE_load;
+	name SCUE_helics;
 	parent 406-1032405;
 	phases ABCN;
 	constant_power_A 81.7 kVA;
@@ -26766,7 +26766,7 @@ object load {
 }
 
 object load {
-	name GasTurbine1_load;  // in reality this turbine is out of service
+	name GasTurbine1_helics;  // in reality this turbine is out of service
 	parent CASPA;
 	phases ABCN;
 	nominal_voltage 2401.78;
@@ -26776,7 +26776,7 @@ object load {
 }
 
 object load {
-	name GasTurbine2_load;
+	name GasTurbine2_helics;
 	parent GWSP-B;
 	phases ABCN;
 	nominal_voltage 2401.78;
@@ -26786,7 +26786,7 @@ object load {
 }
 
 object load {
-	name GasTurbine3_load;
+	name GasTurbine3_helics;
 	parent GWSP-B;
 	phases ABCN;
 	nominal_voltage 2401.78;
@@ -26796,7 +26796,7 @@ object load {
 }
 
 object load {
-	name GasTurbine4_load;
+	name GasTurbine4_helics;
 	parent GWSP-A;
 	phases ABCN;
 	nominal_voltage 2401.78;
@@ -27000,7 +27000,7 @@ object recorder {
 
 object recorder {
 	name Vault3_load_recorder;
-	parent Vault3_load;
+	parent Vault3_helics;
 	property constant_power_A, constant_power_B, constant_power_C;
 	interval 600;
 	file TotalPower_Vault3_load.csv;

@@ -51,7 +51,7 @@ def register_federate(json_filename):
     return fed
 
 
-def create_config_for_helics(source_node, target_bldg_model, gridlabd_nodes=[], node_phase=0,
+def create_config_for_helics(source_node, target_bldg_model, gridlabd_assets=[], node_phase=0,
                              config_for_gridlabd=bool(False)):
     if len(source_node) > 5:
         source_node = source_node[0:5]  # source_node(1:5)
@@ -90,17 +90,33 @@ def create_config_for_helics(source_node, target_bldg_model, gridlabd_nodes=[], 
 
     if config_for_gridlabd:
         phases = ['A', 'B', 'C']
-        for node in gridlabd_nodes:
-            for phase in phases:
-                config['publications'].append({'key': str(source_node + '_GLD_' + node.name + '_power_' + phase),
-                                               'global': bool('true'),
-                                               'type': str('complex')})
-                gld_config['subscriptions'].append({'key': str(source_node + '_GLD_' + node.name + '_power_' + phase),
-                                                    'type': str('complex'),
-                                                    'unit': "VA",
-                                                    'info': {"object": f"{node.name}_load",
-                                                             "property": f"constant_power_{phase}"}
-                                                    })
+        for asset in gridlabd_assets:
+            if 'gld_info' not in asset.__dict__.keys(): # check if gld_info is a property in the asset. If not use defaults
+                for phase in phases:
+                    config['publications'].append({'key': str(source_node + '_GLD_' + asset.name + '_power_' + phase),
+                                                   'global': bool('true'),
+                                                   'type': str('complex')})
+                    gld_config['subscriptions'].append({'key': str(source_node + '_GLD_' + asset.name + '_power_' + phase),
+                                                        'type': str('complex'),
+                                                        'unit': "VA",
+                                                        'info': {"object": f"{asset.name}_helics",
+                                                                 "property": f"constant_power_{phase}"}
+                                                        })
+            else:  # use info specified by asset to setup helics link
+                if type(asset.gld_info['property']) is str:
+                    properties = [asset.gld_info['property']]
+                else:
+                    properties = asset.gld_info['property']
+                for prop in properties:
+                    config['publications'].append({'key': str(source_node + '_GLD_' + asset.name + '_' + prop),
+                                                   'global': bool('true'),
+                                                   'type': asset.gld_info['type']})
+                    gld_config['subscriptions'].append({'key': str(source_node + '_GLD_' + asset.name + '_' + prop),
+                                                        'type': asset.gld_info['type'],
+                                                        'unit': "VA",
+                                                        'info': {"object": asset.gld_info['object'],
+                                                                 "property": prop}})
+
 
     if config_for_gridlabd:
         gld_json_filename = 'network/gld_config.json'

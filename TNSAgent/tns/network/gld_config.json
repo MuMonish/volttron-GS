@@ -9,7 +9,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "SCUE_load",
+                "object": "SCUE_helics",
                 "property": "constant_power_A"
             }
         },
@@ -18,7 +18,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "SCUE_load",
+                "object": "SCUE_helics",
                 "property": "constant_power_B"
             }
         },
@@ -27,7 +27,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "SCUE_load",
+                "object": "SCUE_helics",
                 "property": "constant_power_C"
             }
         },
@@ -36,7 +36,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "JohnsonHall_load",
+                "object": "JohnsonHall_helics",
                 "property": "constant_power_A"
             }
         },
@@ -45,7 +45,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "JohnsonHall_load",
+                "object": "JohnsonHall_helics",
                 "property": "constant_power_B"
             }
         },
@@ -54,7 +54,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "JohnsonHall_load",
+                "object": "JohnsonHall_helics",
                 "property": "constant_power_C"
             }
         },
@@ -63,7 +63,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Vault3_load",
+                "object": "Vault3_helics",
                 "property": "constant_power_A"
             }
         },
@@ -72,7 +72,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Vault3_load",
+                "object": "Vault3_helics",
                 "property": "constant_power_B"
             }
         },
@@ -81,7 +81,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Vault3_load",
+                "object": "Vault3_helics",
                 "property": "constant_power_C"
             }
         },
@@ -90,7 +90,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Vault5_load",
+                "object": "Vault5_helics",
                 "property": "constant_power_A"
             }
         },
@@ -99,7 +99,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Vault5_load",
+                "object": "Vault5_helics",
                 "property": "constant_power_B"
             }
         },
@@ -108,7 +108,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Vault5_load",
+                "object": "Vault5_helics",
                 "property": "constant_power_C"
             }
         },
@@ -117,7 +117,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "TVW131_load",
+                "object": "TVW131_helics",
                 "property": "constant_power_A"
             }
         },
@@ -126,7 +126,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "TVW131_load",
+                "object": "TVW131_helics",
                 "property": "constant_power_B"
             }
         },
@@ -135,7 +135,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "TVW131_load",
+                "object": "TVW131_helics",
                 "property": "constant_power_C"
             }
         },
@@ -144,7 +144,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "TUR117_load",
+                "object": "TUR117_helics",
                 "property": "constant_power_A"
             }
         },
@@ -153,7 +153,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "TUR117_load",
+                "object": "TUR117_helics",
                 "property": "constant_power_B"
             }
         },
@@ -162,7 +162,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "TUR117_load",
+                "object": "TUR117_helics",
                 "property": "constant_power_C"
             }
         },
@@ -171,7 +171,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "TUR115_load",
+                "object": "TUR115_helics",
                 "property": "constant_power_A"
             }
         },
@@ -180,7 +180,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "TUR115_load",
+                "object": "TUR115_helics",
                 "property": "constant_power_B"
             }
         },
@@ -189,7 +189,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "TUR115_load",
+                "object": "TUR115_helics",
                 "property": "constant_power_C"
             }
         },
@@ -198,7 +198,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "TUR111_load",
+                "object": "TUR111_helics",
                 "property": "constant_power_A"
             }
         },
@@ -207,7 +207,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "TUR111_load",
+                "object": "TUR111_helics",
                 "property": "constant_power_B"
             }
         },
@@ -216,7 +216,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "TUR111_load",
+                "object": "TUR111_helics",
                 "property": "constant_power_C"
             }
         },
@@ -225,7 +225,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "SPU125_load",
+                "object": "SPU125_helics",
                 "property": "constant_power_A"
             }
         },
@@ -234,7 +234,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "SPU125_load",
+                "object": "SPU125_helics",
                 "property": "constant_power_B"
             }
         },
@@ -243,7 +243,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "SPU125_load",
+                "object": "SPU125_helics",
                 "property": "constant_power_C"
             }
         },
@@ -252,7 +252,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "EA7_JBA_load",
+                "object": "EA7_JBA_helics",
                 "property": "constant_power_A"
             }
         },
@@ -261,7 +261,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "EA7_JBA_load",
+                "object": "EA7_JBA_helics",
                 "property": "constant_power_B"
             }
         },
@@ -270,7 +270,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "EA7_JBA_load",
+                "object": "EA7_JBA_helics",
                 "property": "constant_power_C"
             }
         },
@@ -279,7 +279,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "EA7_SPA_load",
+                "object": "EA7_SPA_helics",
                 "property": "constant_power_A"
             }
         },
@@ -288,7 +288,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "EA7_SPA_load",
+                "object": "EA7_SPA_helics",
                 "property": "constant_power_B"
             }
         },
@@ -297,7 +297,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "EA7_SPA_load",
+                "object": "EA7_SPA_helics",
                 "property": "constant_power_C"
             }
         },
@@ -306,7 +306,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "EB13_JBA_load",
+                "object": "EB13_JBA_helics",
                 "property": "constant_power_A"
             }
         },
@@ -315,7 +315,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "EB13_JBA_load",
+                "object": "EB13_JBA_helics",
                 "property": "constant_power_B"
             }
         },
@@ -324,7 +324,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "EB13_JBA_load",
+                "object": "EB13_JBA_helics",
                 "property": "constant_power_C"
             }
         },
@@ -333,7 +333,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "EB13_JBB_load",
+                "object": "EB13_JBB_helics",
                 "property": "constant_power_A"
             }
         },
@@ -342,7 +342,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "EB13_JBB_load",
+                "object": "EB13_JBB_helics",
                 "property": "constant_power_B"
             }
         },
@@ -351,7 +351,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "EB13_JBB_load",
+                "object": "EB13_JBB_helics",
                 "property": "constant_power_C"
             }
         },
@@ -360,7 +360,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "GasTurbine1_load",
+                "object": "GasTurbine1_helics",
                 "property": "constant_power_A"
             }
         },
@@ -369,7 +369,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "GasTurbine1_load",
+                "object": "GasTurbine1_helics",
                 "property": "constant_power_B"
             }
         },
@@ -378,7 +378,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "GasTurbine1_load",
+                "object": "GasTurbine1_helics",
                 "property": "constant_power_C"
             }
         },
@@ -387,7 +387,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "GasTurbine2_load",
+                "object": "GasTurbine2_helics",
                 "property": "constant_power_A"
             }
         },
@@ -396,7 +396,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "GasTurbine2_load",
+                "object": "GasTurbine2_helics",
                 "property": "constant_power_B"
             }
         },
@@ -405,7 +405,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "GasTurbine2_load",
+                "object": "GasTurbine2_helics",
                 "property": "constant_power_C"
             }
         },
@@ -414,7 +414,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "GasTurbine3_load",
+                "object": "GasTurbine3_helics",
                 "property": "constant_power_A"
             }
         },
@@ -423,7 +423,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "GasTurbine3_load",
+                "object": "GasTurbine3_helics",
                 "property": "constant_power_B"
             }
         },
@@ -432,7 +432,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "GasTurbine3_load",
+                "object": "GasTurbine3_helics",
                 "property": "constant_power_C"
             }
         },
@@ -441,7 +441,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "GasTurbine4_load",
+                "object": "GasTurbine4_helics",
                 "property": "constant_power_A"
             }
         },
@@ -450,7 +450,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "GasTurbine4_load",
+                "object": "GasTurbine4_helics",
                 "property": "constant_power_B"
             }
         },
@@ -459,7 +459,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "GasTurbine4_load",
+                "object": "GasTurbine4_helics",
                 "property": "constant_power_C"
             }
         },
@@ -468,7 +468,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller1_load",
+                "object": "Chiller1_helics",
                 "property": "constant_power_A"
             }
         },
@@ -477,7 +477,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller1_load",
+                "object": "Chiller1_helics",
                 "property": "constant_power_B"
             }
         },
@@ -486,7 +486,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller1_load",
+                "object": "Chiller1_helics",
                 "property": "constant_power_C"
             }
         },
@@ -495,7 +495,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller2_load",
+                "object": "Chiller2_helics",
                 "property": "constant_power_A"
             }
         },
@@ -504,7 +504,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller2_load",
+                "object": "Chiller2_helics",
                 "property": "constant_power_B"
             }
         },
@@ -513,7 +513,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller2_load",
+                "object": "Chiller2_helics",
                 "property": "constant_power_C"
             }
         },
@@ -522,7 +522,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller3_load",
+                "object": "Chiller3_helics",
                 "property": "constant_power_A"
             }
         },
@@ -531,7 +531,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller3_load",
+                "object": "Chiller3_helics",
                 "property": "constant_power_B"
             }
         },
@@ -540,7 +540,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller3_load",
+                "object": "Chiller3_helics",
                 "property": "constant_power_C"
             }
         },
@@ -549,7 +549,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller4_load",
+                "object": "Chiller4_helics",
                 "property": "constant_power_A"
             }
         },
@@ -558,7 +558,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller4_load",
+                "object": "Chiller4_helics",
                 "property": "constant_power_B"
             }
         },
@@ -567,7 +567,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller4_load",
+                "object": "Chiller4_helics",
                 "property": "constant_power_C"
             }
         },
@@ -576,7 +576,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller5_load",
+                "object": "Chiller5_helics",
                 "property": "constant_power_A"
             }
         },
@@ -585,7 +585,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller5_load",
+                "object": "Chiller5_helics",
                 "property": "constant_power_B"
             }
         },
@@ -594,7 +594,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller5_load",
+                "object": "Chiller5_helics",
                 "property": "constant_power_C"
             }
         },
@@ -603,7 +603,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller6_load",
+                "object": "Chiller6_helics",
                 "property": "constant_power_A"
             }
         },
@@ -612,7 +612,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller6_load",
+                "object": "Chiller6_helics",
                 "property": "constant_power_B"
             }
         },
@@ -621,7 +621,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller6_load",
+                "object": "Chiller6_helics",
                 "property": "constant_power_C"
             }
         },
@@ -630,7 +630,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller7_load",
+                "object": "Chiller7_helics",
                 "property": "constant_power_A"
             }
         },
@@ -639,7 +639,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller7_load",
+                "object": "Chiller7_helics",
                 "property": "constant_power_B"
             }
         },
@@ -648,7 +648,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller7_load",
+                "object": "Chiller7_helics",
                 "property": "constant_power_C"
             }
         },
@@ -657,7 +657,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller8_load",
+                "object": "Chiller8_helics",
                 "property": "constant_power_A"
             }
         },
@@ -666,7 +666,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller8_load",
+                "object": "Chiller8_helics",
                 "property": "constant_power_B"
             }
         },
@@ -675,7 +675,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller8_load",
+                "object": "Chiller8_helics",
                 "property": "constant_power_C"
             }
         },
@@ -684,7 +684,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller9_load",
+                "object": "Chiller9_helics",
                 "property": "constant_power_A"
             }
         },
@@ -693,7 +693,7 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller9_load",
+                "object": "Chiller9_helics",
                 "property": "constant_power_B"
             }
         },
@@ -702,8 +702,17 @@
             "type": "complex",
             "unit": "VA",
             "info": {
-                "object": "Chiller9_load",
+                "object": "Chiller9_helics",
                 "property": "constant_power_C"
+            }
+        },
+        {
+            "key": "WSU_C_GLD_inv_researchPark_P_Out",
+            "type": "double",
+            "unit": "VA",
+            "info": {
+                "object": "inv_researchPark",
+                "property": "P_Out"
             }
         }
     ]
