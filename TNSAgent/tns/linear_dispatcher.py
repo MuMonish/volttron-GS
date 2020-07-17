@@ -50,7 +50,7 @@ def create_timestamp(year,month,day,length,dt=1):
     return timestamp
 
 ############# read in demand #########################################
-wb = xlrd.open_workbook(os.getcwd() +'\wsu_campus_2009_2012.xlsx')
+wb = xlrd.open_workbook(os.getcwd() +'/wsu_campus_2009_2012.xlsx')
 dem_sheet = wb.sheet_by_index(0)
 weather_sheet = wb.sheet_by_index(1)
 

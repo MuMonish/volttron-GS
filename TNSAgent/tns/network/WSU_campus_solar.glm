@@ -34,7 +34,7 @@ module connection;
 
 object helics_msg {
   name WSU_Campus_helics;
-  configure WSU_Campus_feeders.json;
+  configure gld_config.json;
 }
 
 object meter {

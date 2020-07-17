@@ -6,9 +6,9 @@
     "uninterruptible": true,
     "publications": [
         {
-            "global": true,
             "key": "WSU_C_SCUE",
-            "type": "string"
+            "type": "string",
+            "global": true
         },
         {
             "key": "WSU_C_GLD_SCUE_power_A",
@@ -403,7 +403,6 @@
     ],
     "subscriptions": [
         {
-            "required": true,
             "key": "SCUE_WSU_C",
             "type": "string"
         }

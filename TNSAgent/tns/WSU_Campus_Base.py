@@ -692,7 +692,7 @@ json_filename = create_config_for_helics(dayAhead.name,
                                          config_for_gridlabd=True)
 
 print(json_filename)
-broker = create_broker(number_federates=3)
+broker = create_broker(number_federates=2)
 fed = register_federate(json_filename)
 status = h.helicsFederateEnterInitializingMode(fed)
 status = h.helicsFederateEnterExecutingMode(fed)

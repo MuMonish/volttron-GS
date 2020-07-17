@@ -78,14 +78,14 @@ def create_config_for_helics(source_node, target_bldg_model, gridlabd_nodes=[], 
 
     config['publications'] = []
     for i in range(len(target_bldg_model)):
-        config['publications'].append({'global': bool('true'),
-                                       'key': str(source_node + '_' + target_bldg_model[i]),
-                                       'type': str('string')})
+        config['publications'].append({'key': str(source_node + '_' + target_bldg_model[i]),
+                                       'type': str('string'),
+                                       'global': bool('true'),
+                                       })
 
     config['subscriptions'] = []
     for i in range(len(target_bldg_model)):
-        config['subscriptions'].append({'required': bool('true'),
-                                        'key': str(target_bldg_model[i] + '_' + source_node),
+        config['subscriptions'].append({'key': str(target_bldg_model[i] + '_' + source_node),
                                         'type': str('string')})
 
     if config_for_gridlabd:

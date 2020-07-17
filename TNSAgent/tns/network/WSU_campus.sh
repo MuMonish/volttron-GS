@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-gridlabd WSU_campus_solar.glm
+gridlabd WSU_campus.glm

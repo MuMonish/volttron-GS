@@ -1,0 +1,186 @@
+{
+    "name": "WSU_C",
+    "loglevel": 7,
+    "coreType": "zmq",
+    "timeDelta": 1.0,
+    "uninterruptible": true,
+    "publications": [
+        {
+            "global": true,
+            "key": "WSU_C_SCUE",
+            "type": "string"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_Vault3_power_A",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_Vault3_power_B",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_Vault3_power_C",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_Vault5_power_A",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_Vault5_power_B",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_Vault5_power_C",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_TVW131_power_A",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_TVW131_power_B",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_TVW131_power_C",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_TUR117_power_A",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_TUR117_power_B",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_TUR117_power_C",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_TUR115_power_A",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_TUR115_power_B",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_TUR115_power_C",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_TUR111_power_A",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_TUR111_power_B",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_TUR111_power_C",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_SPU125_power_A",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_SPU125_power_B",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_SPU125_power_C",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_EA7_JBA_power_A",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_EA7_JBA_power_B",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_EA7_JBA_power_C",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_EA7_SPA_power_A",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_EA7_SPA_power_B",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_EA7_SPA_power_C",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_EB13_JBA_power_A",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_EB13_JBA_power_B",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_EB13_JBA_power_C",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_EB13_JBB_power_A",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_EB13_JBB_power_B",
+            "type": "complex"
+        },
+        {
+            "global": true,
+            "key": "WSU_C_GLD_EB13_JBB_power_C",
+            "type": "complex"
+        }
+    ],
+    "subscriptions": [
+        {
+            "required": true,
+            "key": "SCUE_WSU_C",
+            "type": "string"
+        }
+    ]
+}
