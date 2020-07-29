@@ -315,7 +315,7 @@ class FlexibleBuilding(LocalAssetModel):
                     self.activeVertices[str(vertices_type[type_energy])] =[]
                     self.activeVertices[str(vertices_type[type_energy])].append(iv)
 
-    def update_dispatch(self, mkt, fed, helics_flag = bool(1)):
+    def update_dispatch(self, mkt, fed=None, helics_flag = bool(0)):
         for i in range(len(self.measurementType)):
             if self.measurementType[i] == MeasurementType.PowerReal:
                 elec_dispatched = self.scheduledPowers[i]
@@ -325,40 +325,24 @@ class FlexibleBuilding(LocalAssetModel):
                 cool_dispatched = self.scheduledPowers[i]
 
         interval = mkt.marketClearingTime.strftime('%Y%m%dT%H%M%S')
-
-
         header = str("TimeStamp,TimeInterval,Temperature Setpoint Dispatched,Heat Dispatched,Cooling Dispatched\n")
         new_line = str(mkt.marketClearingTime) + "," + str(interval) + "," + str(elec_dispatched) +  "," + str(heat_dispatched) + "," + str(cool_dispatched) + " \n"
-
-        t = mkt.marketClearingTime.hour * 3600
-        t = t+1
 
         if helics_flag == True:
             target_node = str(self.name)
             if len(target_node) > 5:
                 target_node = target_node[0:5]  # source_node(1:5)
-
             # Shorten the name of the target node
             source_node = str(mkt.name)
             if len(source_node) > 5:
                 source_node = source_node[0:5]  # target_node(1:5)
-
             # Format the filename. Do not allow spaces.
             pub_key = source_node+'_'+target_node
             pub_data = header + new_line
-
-            grantedtime = -1
-            while grantedtime < t:
-                grantedtime = h.helicsFederateRequestTime (fed, t)
-            time.sleep(0.1)
-
             pub = h.helicsFederateGetPublication(fed, pub_key)
             print(pub)
             status = h.helicsPublicationPublishString(pub, pub_data)
-            print('Data Published to Helics -->', pub_data)
-
-            print('Time requested via Helics -->', t)
-            print('Time granted via Helics -->', grantedtime)
+            print('Data {} Published to EAGERS {} via Helics -->'.format(pub_data, target_node))
 
         file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
         try:

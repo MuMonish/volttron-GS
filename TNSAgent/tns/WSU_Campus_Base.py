@@ -1,7 +1,6 @@
 #################################
 #### MyTransactiveNode with thermal Test
 from datetime import timedelta, datetime
-
 from neighbor import Neighbor
 from neighbor_model import NeighborModel
 from local_asset import LocalAsset
@@ -22,14 +21,15 @@ from interval_value import IntervalValue
 from gas_turbine import GasTurbine
 from boiler import Boiler
 from chiller import Chiller
+from solar_pv_resource_model import SolarPvResourceModel
 import copy
+import os, shutil
 
 from helics_functions import create_config_for_helics
 from helics_functions import create_broker
 from helics_functions import register_federate
 from helics_functions import destroy_federate
 import helics as h
-
 
 # create a neighbor model
 WSU_Campus = myTransactiveNode()
@@ -66,6 +66,7 @@ mTN.informationServiceModels = [PullmanTemperatureForecast]
 
 ## Day Ahead Market
 date_string = '2017-01-18'
+#date_string = '2017-07-24'
 dayAhead = Market(measurementType = [MeasurementType.PowerReal, MeasurementType.Heat, MeasurementType.Cooling])
 MKT = dayAhead
 MKT.name = 'WSU_Campus_Market'
@@ -670,7 +671,13 @@ solar.name = 'inv_researchPark'
 solar.description = '72kW Solar PV array at WSU Research Park'
 solar.gld_info = {'object': 'inv_researchPark', 'property': ['P_Out'], 'type': 'double'}
 
-
+solarModel = SolarPvResourceModel()
+solarModel.name = 'inv_researchPark'
+solarModel.size = 75
+solarModel.make_solar_forecast(dayAhead)
+solarModel.get_vertices_from_solar_forecasted_data(dayAhead)
+solar.model = solarModel
+solarModel.object = solar
 
 ################################################################################
 mTN.localAssets = [SCUE, Johnson_Hall, Vault3_Building, Vault5_Building, TVW131_Buildings, TUR117_Buildings,
@@ -694,44 +701,80 @@ gld_helics_objects = [SCUE, Johnson_Hall, Vault3_Building, Vault5_Building, TVW1
 #json_filename = create_config_for_helics(mTN.name, [mTN.neighbors[i].name for i in range(len(mTN.neighbors))])
 #json_filename = create_config_for_helics(dayAhead.name, [mTN.localAssets[0].name], [mTN.localAssets[i].name for i in range(len(mTN.localAssets))], [3 for i in range(len(mTN.localAssets))], config_for_gridlabd = True)
 json_filename = create_config_for_helics(dayAhead.name,
-                                         [mTN.localAssets[0].name],
+                                         [],
                                          gridlabd_assets=gld_helics_objects,
                                          node_phase=[3 for i in range(len(mTN.localAssets))],
                                          config_for_gridlabd=True)
 
 print(json_filename)
-broker = create_broker(number_federates=2)
-fed = register_federate(json_filename)
-status = h.helicsFederateEnterInitializingMode(fed)
-status = h.helicsFederateEnterExecutingMode(fed)
+helics_flag = True
+
+if helics_flag:
+    broker = create_broker(number_federates=2)
+    fed = register_federate(json_filename)
+    status = h.helicsFederateEnterInitializingMode(fed)
+    status = h.helicsFederateEnterExecutingMode(fed)
 
 ##############################################################################
-
+folder = os.getcwd() +'/Outputs'
+for filename in os.listdir(folder):
+    file_path = os.path.join(folder, filename)
+    try:
+        if os.path.isfile(file_path) or os.path.islink(file_path):
+            os.unlink(file_path)
+        elif os.path.isdir(file_path):
+            shutil.rmtree(file_path)
+    except Exception as e:
+        print('Failed to delete %s. Reason: %s' % (file_path, e))
+##############################################################################
 dayAhead.intervalsToClear = 24
-for time in range(dayAhead.intervalsToClear):
+grantedtime = -1
+
+start_time = dayAhead.marketClearingTime
+Simulation_time = dayAhead.intervalsToClear*dayAhead.intervalDuration.seconds
+
+time_diff = (dayAhead.marketClearingTime - start_time)
+time_now = time_diff.days*86400 + time_diff.seconds
+while time_now < Simulation_time:
 
     for asset in mTN.localAssets:
         if 'FlexibleBuilding' in str(asset.model):
             asset.model.request_helics_to_get_vertices_from_CESI_building(dayAhead, fed)
             #asset.model.get_vertices_from_CESI_building(dayAhead)
         if 'InflexibleBuilding' in str(asset.model):
-            asset.model.get_vertices_from_inflexible_CESI_building(dayAhead)
+            asset.model.get_active_vertices_from_inflexible_CESI_building(dayAhead)
+        if  'SolarPvResourceModel' in str(asset.model):
+            asset.model.get_active_vertices_from_solar_pv_resource(dayAhead)
 
+    ### update_dispatch after a delay
+    time_now = time_now + 300
+    if helics_flag:
+        while grantedtime < time_now:
+            grantedtime = h.helicsFederateRequestTime(fed, time_now)
+
+    print("Simulation Time: {}".format(time_now))
     dayAhead.check_intervals()
     dayAhead.centralized_dispatch(WSU_Campus)
 
     #dayAhead.update_electrical_network(mTN, fed)
     for asset in mTN.localAssets:
-        asset.model.update_dispatch(dayAhead, fed)
+        if helics_flag:
+            asset.model.update_dispatch(dayAhead, fed, True)
+        else:
+            asset.model.update_dispatch(dayAhead)
 
     dayAhead.marketClearingTime = dayAhead.marketClearingTime + timedelta(hours=1)
     dayAhead.nextMarketClearingTime = dayAhead.marketClearingTime + timedelta(hours=1)
+    time_diff = (dayAhead.marketClearingTime - start_time)
+    time_now = time_diff.days*86400 + time_diff.seconds
+
 
 # call the information service that predicts and stores outdoor temps
 PullmanTemperatureForecast.update_information(dayAhead)
 
 ############################ Finalize Helics  ##############################
-destroy_federate(fed)
+if helics_flag:
+    destroy_federate(fed)
 ############################################################################
 
 

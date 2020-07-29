@@ -1,11 +1,7 @@
 #set profiler=1;
-
 #set iteration_limit=50;
-
 #set minimum_timestep=300;
-
 #set relax_naming_rules=1;
-
 
 clock {
 	timezone PST+8PDT;
@@ -21,15 +17,10 @@ module powerflow {
 };
 
 module residential;
-
 module generators;
-
 module tape;
-
 module assert;
-
 module connection;
-
 module climate;
 
 object helics_msg {

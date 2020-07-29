@@ -6,11 +6,6 @@
     "uninterruptible": true,
     "publications": [
         {
-            "key": "WSU_C_SCUE",
-            "type": "string",
-            "global": true
-        },
-        {
             "key": "WSU_C_GLD_SCUE_power_A",
             "global": true,
             "type": "complex"
@@ -406,10 +401,5 @@
             "type": "double"
         }
     ],
-    "subscriptions": [
-        {
-            "key": "SCUE_WSU_C",
-            "type": "string"
-        }
-    ]
+    "subscriptions": []
 }

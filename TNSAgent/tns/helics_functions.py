@@ -13,7 +13,7 @@ def create_broker(number_federates=3):
     logger = logging.getLogger(__name__)
     logger.addHandler(logging.StreamHandler())
     logger.setLevel(logging.DEBUG)
-    initstring = "--federates={} --name=mainbroker".format(number_federates)
+    initstring = "--federates={} --name=mainbroker --loglevel=4".format(number_federates)
     broker = h.helicsCreateBroker("zmq", "", initstring)
     isconnected = h.helicsBrokerIsConnected(broker)
 
@@ -75,6 +75,7 @@ def create_config_for_helics(source_node, target_bldg_model, gridlabd_assets=[],
         gld_config['coreType'] = str('zmq')
         gld_config['period'] = 1.0
         gld_config['subscriptions'] = []
+        gld_config['publications'] = []
 
     config['publications'] = []
     for i in range(len(target_bldg_model)):
@@ -111,11 +112,20 @@ def create_config_for_helics(source_node, target_bldg_model, gridlabd_assets=[],
                     config['publications'].append({'key': str(source_node + '_GLD_' + asset.name + '_' + prop),
                                                    'global': bool('true'),
                                                    'type': asset.gld_info['type']})
+                    # config['subscriptions'].append({'key': str('GLD_' + asset.name + '_' + source_node + '_' + prop),
+                    #                                 'type': asset.gld_info['type']})
+
                     gld_config['subscriptions'].append({'key': str(source_node + '_GLD_' + asset.name + '_' + prop),
                                                         'type': asset.gld_info['type'],
                                                         'unit': "VA",
                                                         'info': {"object": asset.gld_info['object'],
                                                                  "property": prop}})
+                    # gld_config['publications'].append({'key': str('GLD_' + asset.name + '_' + source_node + '_' + prop),
+                    #                                     'type': asset.gld_info['type'],
+                    #                                     'unit': "VA",
+                    #                                     'global': bool(True),
+                    #                                     'info': {"object": asset.gld_info['object'],
+                    #                                              "property": prop}})
 
 
     if config_for_gridlabd:

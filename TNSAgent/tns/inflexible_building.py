@@ -9,7 +9,6 @@ from measurement_type import MeasurementType
 from local_asset_model import LocalAssetModel
 from helpers import *
 from time_interval import TimeInterval
-
 import helics as h
 
 class InflexibleBuilding(LocalAssetModel):
@@ -51,44 +50,75 @@ class InflexibleBuilding(LocalAssetModel):
             self.defaultPower[i] = self.activeVertices[i][0].value.power
 
     def get_vertices_from_inflexible_CESI_building(self, mkt):
+        # create vertices that are use on instantiation and stores all the vertices that will required by the simulation
+        # INPUTS:
+        #
+        # OUTPUTS:
+        # vertices: the default minimum and maximum limit vertices
         inflexible_building_folder = os.getcwd() + '/buildings/'
         csv_name = self.name + '_buildings.csv'
         filename = inflexible_building_folder+csv_name
-        self.activeVertices = {}
+        self.vertices = {}
+
+        mkt_time = mkt.marketClearingTime
         with open(filename) as file:
             reader = csv.DictReader(file)
             for row in reader:
                 timestamp_data = datetime.strptime(row['timestamp'], '%m/%d/%Y %H:%M:%S')
-                mkt_time = mkt.marketClearingTime
-                while mkt_time < (mkt.marketClearingTime + mkt.futureHorizon):
-                    if timestamp_data == mkt_time:
-                        neutral_vertex_e = Vertex(marginal_price=float('inf'), prod_cost=0.0, power=float(row['E']))
-                        neutral_vertex_h = Vertex(marginal_price=float('inf'), prod_cost=0.0, power=float(row['H']))
-                        neutral_vertex_c = Vertex(marginal_price=float('inf'), prod_cost=0.0, power=float(row['C']))
+                if mkt_time >= (mkt.marketClearingTime + mkt.futureHorizon + (mkt.intervalsToClear*mkt.intervalDuration)):
+                    break
+                if timestamp_data == mkt_time:
+                    neutral_vertex_e = Vertex(marginal_price=float('inf'), prod_cost=0.0, power=float(row['E']))
+                    neutral_vertex_h = Vertex(marginal_price=float('inf'), prod_cost=0.0, power=float(row['H']))
+                    neutral_vertex_c = Vertex(marginal_price=float('inf'), prod_cost=0.0, power=float(row['C']))
 
-                        vertices_val = [neutral_vertex_e, neutral_vertex_h,neutral_vertex_c]
-                        vertices_type = [MeasurementType.PowerReal, MeasurementType.Heat, MeasurementType.Cooling]
-                        for type_energy, vert in enumerate(vertices_val):
-                            iv = IntervalValue(self, mkt_time, mkt, MeasurementType.ActiveVertex, vert)
-                            if str(vertices_type[type_energy]) in self.activeVertices:
-                                self.activeVertices[str(vertices_type[type_energy])].append(iv)
-                            else:
-                                self.activeVertices[str(vertices_type[type_energy])] = []
-                                self.activeVertices[str(vertices_type[type_energy])].append(iv)
+                    vertices_val = [neutral_vertex_e, neutral_vertex_h,neutral_vertex_c]
+                    vertices_type = [MeasurementType.PowerReal, MeasurementType.Heat, MeasurementType.Cooling]
+                    for type_energy, vert in enumerate(vertices_val):
+                        iv = IntervalValue(self, mkt_time, mkt, MeasurementType.ActiveVertex, vert)
+                        if str(vertices_type[type_energy]) in self.vertices:
+                            self.vertices[str(vertices_type[type_energy])].append(iv)
+                        else:
+                            self.vertices[str(vertices_type[type_energy])] = []
+                            self.vertices[str(vertices_type[type_energy])].append(iv)
                     mkt_time = mkt_time + mkt.intervalDuration
 
-    def update_dispatch(self, mkt, fed, helics_flag = bool(1)):
-        for i in range(len(self.measurementType)):
-            if self.measurementType[i] == MeasurementType.PowerReal:
-                elec_dispatched = self.scheduledPowers[i]*1000
-            elif self.measurementType[i] == MeasurementType.Heat:
-                heat_dispatched = self.scheduledPowers[i]*1000
-            elif self.measurementType[i] == MeasurementType.Cooling:
-                cool_dispatched = self.scheduledPowers[i]*1000
+        print("Read Vertices from Inflexible building data for {}".format(self.name))
+
+
+    def get_active_vertices_from_inflexible_CESI_building(self, mkt):
+        # creates active vertices for the current time from the stored vertices
+        # INPUTS:
+        #
+        # OUTPUTS:
+        # vertices: the default minimum and maximum limit vertices
+
+        self.activeVertices = {}
+        for type_energy in self.vertices:
+            mkt_time = mkt.marketClearingTime
+
+            for iv in self.vertices[type_energy]:
+                if  mkt_time >= (mkt.marketClearingTime + mkt.futureHorizon):
+                    break
+                if iv.timeInterval == mkt_time:
+                    if type_energy in self.activeVertices:
+                        self.activeVertices[type_energy].append(iv)
+                    else:
+                        self.activeVertices[type_energy]= []
+                        self.activeVertices[type_energy].append(iv)
+                    mkt_time = mkt_time + mkt.intervalDuration
+
+        print("Read Active Vertices for {}".format(self.name))
+
+
+    def update_dispatch(self, mkt, fed=None, helics_flag = bool(0)):
+
+        elec_dispatched = self.scheduledPowers[str(MeasurementType.PowerReal)]*1000
+        heat_dispatched = self.scheduledPowers[str(MeasurementType.Heat)]*1000
+        cool_dispatched = self.scheduledPowers[str(MeasurementType.Cooling)]*1000
 
         interval = mkt.marketClearingTime.strftime('%Y%m%dT%H%M%S')
-        t = mkt.marketClearingTime.hour * 3600
-        t = t+3
+
         if helics_flag == True:
             key1 = "WSU_C_GLD_" + self.name + "_power_A"
             key2 = "WSU_C_GLD_" + self.name + "_power_B"
@@ -97,16 +127,10 @@ class InflexibleBuilding(LocalAssetModel):
                 pubA = h.helicsFederateGetPublication(fed, key1)
                 pubB = h.helicsFederateGetPublication(fed, key2)
                 pubC = h.helicsFederateGetPublication(fed, key3)
-
                 status = h.helicsPublicationPublishComplex(pubA, elec_dispatched/3, 0)
                 status = h.helicsPublicationPublishComplex(pubB, elec_dispatched/3, 0)
                 status = h.helicsPublicationPublishComplex(pubC, elec_dispatched/3, 0)
-
-                print('Data Published to Helics -->', elec_dispatched/3)
-                grantedtime = -1
-                while grantedtime < t:
-                    grantedtime = h.helicsFederateRequestTime (fed, t)
-                time.sleep(0.1)
+                print('Data {} Published to GLD {} via Helics -->'.format(elec_dispatched, self.name))
             except:
                 print('Publication was not registered')
 

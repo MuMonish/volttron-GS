@@ -169,19 +169,13 @@ class Boiler(LocalAssetModel):
                 self.activeVertices[str(vertices_type[type_energy])] = []
                 self.activeVertices[str(vertices_type[type_energy])].append(iv)
 
-    def update_dispatch(self, mkt, fed, helics_flag = bool(0)):
-        for i in range(len(self.measurementType)):
-            if self.measurementType[i] == MeasurementType.PowerReal:
-                elec_dispatched = self.scheduledPowers[i]
-            elif self.measurementType[i] == MeasurementType.Heat:
-                heat_dispatched = self.scheduledPowers[i]
-            elif self.measurementType[i] == MeasurementType.Cooling:
-                cool_dispatched = self.scheduledPowers[i]
+    def update_dispatch(self, mkt, fed=None, helics_flag = bool(0)):
 
+        heat_dispatched = self.scheduledPowers[str(MeasurementType.Heat)]
         gas_consumed = self.use_fit_curve(heat_dispatched)
         cost = mkt.gas_rate * gas_consumed
-        interval = mkt.marketClearingTime.strftime('%Y%m%dT%H%M%S')
 
+        interval = mkt.marketClearingTime.strftime('%Y%m%dT%H%M%S')
         line_new =  str(mkt.marketClearingTime) + "," + str(interval) + "," + str(heat_dispatched) +  "," + str(gas_consumed) + "," + str(cost) + " \n"
         file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
         try:

@@ -1,10 +1,8 @@
 import numpy as np 
 import pandas as pd
 import os
-
 #import csv
-from datetime import datetime, timedelta, date, time 
-
+from datetime import datetime, timedelta, date, time
 from thermal_agent_model import ThermalAgentModel
 from vertex import Vertex
 from auction import Auction
@@ -12,6 +10,7 @@ from piecewise_fit import bin_data
 from local_asset_model import LocalAssetModel
 from measurement_type import MeasurementType
 from interval_value import IntervalValue
+import helics as h
 
 class Chiller(LocalAssetModel):
     # Chiller Class
@@ -168,19 +167,28 @@ class Chiller(LocalAssetModel):
                 self.activeVertices[str(vertices_type[type_energy])] = []
                 self.activeVertices[str(vertices_type[type_energy])].append(iv)
 
-    def update_dispatch(self, mkt, fed, helics_flag = bool(0)):
-        for i in range(len(self.measurementType)):
-            if self.measurementType[i] == MeasurementType.PowerReal:
-                elec_dispatched = self.scheduledPowers[i]
-            elif self.measurementType[i] == MeasurementType.Heat:
-                heat_dispatched = self.scheduledPowers[i]
-            elif self.measurementType[i] == MeasurementType.Cooling:
-                cool_dispatched = self.scheduledPowers[i]
+    def update_dispatch(self, mkt, fed = None, helics_flag = bool(0)):
 
-        elec_consumed = cool_dispatched/self.eff
+        cool_dispatched = self.scheduledPowers[str(MeasurementType.Cooling)]
+        elec_consumed = self.use_fit_curve(cool_dispatched)
         cost = mkt.electricity_rate * elec_consumed
-        interval = mkt.marketClearingTime.strftime('%Y%m%dT%H%M%S')
 
+        if helics_flag == True:
+            key1 = "WSU_C_GLD_" + self.name + "_power_A"
+            key2 = "WSU_C_GLD_" + self.name + "_power_B"
+            key3 = "WSU_C_GLD_" + self.name + "_power_C"
+            try:
+                pubA = h.helicsFederateGetPublication(fed, key1)
+                pubB = h.helicsFederateGetPublication(fed, key2)
+                pubC = h.helicsFederateGetPublication(fed, key3)
+                status = h.helicsPublicationPublishComplex(pubA, elec_consumed*1000/3, 0)
+                status = h.helicsPublicationPublishComplex(pubB, elec_consumed*1000/3, 0)
+                status = h.helicsPublicationPublishComplex(pubC, elec_consumed*1000/3, 0)
+                print('Data {} Published to GLD {} via Helics -->'.format(elec_consumed*1000, self.name))
+            except:
+                print('Publication was not registered')
+
+        interval = mkt.marketClearingTime.strftime('%Y%m%dT%H%M%S')
         line_new = str(mkt.marketClearingTime) + "," + str(interval) + "," + str(cool_dispatched) + "," + str(elec_consumed) + "," + str(cost) + " \n"
         file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
         try:
@@ -191,7 +199,6 @@ class Chiller(LocalAssetModel):
                 f.writelines("TimeStamp,TimeInterval,Cool Dispatched,Electricity Consumed,Cost\n")
                 f.writelines(line_new)
         f.close()
-
 
 
     def use_fit_curve(self, setpoint):

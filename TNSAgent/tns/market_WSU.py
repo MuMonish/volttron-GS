@@ -246,29 +246,29 @@ class Market:
 
 
         ############# read in demand #########################################
-        wb = xlrd.open_workbook(os.getcwd() + '/wsu_campus_2009_2012.xlsx')
-        dem_sheet = wb.sheet_by_index(0)
-        weather_sheet = wb.sheet_by_index(1)
-
-        tdb = []  # dry bulb temp
-        irrad_dire_norm = []  # direct normal irradiation
-        e = []
-        h = []
-        c = []
-        for i in range(1, T + 1):
-            e.append(dem_sheet.cell_value(i, 0))
-            h.append(dem_sheet.cell_value(i, 1))
-            c.append(dem_sheet.cell_value(i, 2))
-
-            tdb.append(weather_sheet.cell_value(i, 0))
-            irrad_dire_norm.append(weather_sheet.cell_value(i, 1))
-
-        # heat has way more nans, so remove them
-        h = h[:37810]
-
-        # demand has one value for entire campus
-        demand = {'e': e, 'h': h, 'c': c}
-        weather = {'t_db': tdb, 'irrad_dire_norm': irrad_dire_norm}
+        # wb = xlrd.open_workbook(os.getcwd() + '/wsu_campus_2009_2012.xlsx')
+        # dem_sheet = wb.sheet_by_index(0)
+        # weather_sheet = wb.sheet_by_index(1)
+        #
+        # tdb = []  # dry bulb temp
+        # irrad_dire_norm = []  # direct normal irradiation
+        # e = []
+        # h = []
+        # c = []
+        # for i in range(1, T + 1):
+        #     e.append(dem_sheet.cell_value(i, 0))
+        #     h.append(dem_sheet.cell_value(i, 1))
+        #     c.append(dem_sheet.cell_value(i, 2))
+        #
+        #     tdb.append(weather_sheet.cell_value(i, 0))
+        #     irrad_dire_norm.append(weather_sheet.cell_value(i, 1))
+        #
+        # # heat has way more nans, so remove them
+        # h = h[:37810]
+        #
+        # # demand has one value for entire campus
+        # demand = {'e': e, 'h': h, 'c': c}
+        # weather = {'t_db': tdb, 'irrad_dire_norm': irrad_dire_norm}
 
 
         n_boilers = 0
@@ -277,10 +277,12 @@ class Market:
         n_dieselgen = 0
         n_flexible_building = 0
         n_inflexible_building = 0
+        n_solar_PV = 0
 
         boiler_size = []
         chiller_size = []
         turbine_size = []
+        solar_size = []
 
         boiler_eff = []
         chiller_eff =[]
@@ -304,19 +306,17 @@ class Market:
                 n_inflexible_building = n_inflexible_building+1
             elif 'FlexibleBuilding' in str(asset.model):
                 n_flexible_building = n_flexible_building+1
+            elif 'SolarPvResourceModel' in str(asset.model):
+                n_solar_PV = n_solar_PV + 1
+
 
         inflex_elec_neutral = [[] for i in range(n_inflexible_building)]
         inflex_cool_neutral = [[] for i in range(n_inflexible_building)]
         inflex_heat_neutral = [[] for i in range(n_inflexible_building)]
         ninfb = 0
-        for asset in mtn.localAssets:
-            if 'InflexibleBuilding' in str(asset.model):
-                for t in range(T):
-                    inflex_elec_neutral[ninfb].append(asset.model.activeVertices[str(MeasurementType.PowerReal)][t].value.power)
-                    inflex_cool_neutral[ninfb].append(asset.model.activeVertices[str(MeasurementType.Cooling)][t].value.power)
-                    inflex_heat_neutral[ninfb].append(asset.model.activeVertices[str(MeasurementType.Heat)][t].value.power)
-                ninfb = ninfb + 1
 
+        solar_prediction = [[] for i in range(n_solar_PV)]
+        n_PV = 0
 
         temp_neutral = [[] for i in range(n_flexible_building)]
         temp_up = [[] for i in range(n_flexible_building)]
@@ -328,9 +328,21 @@ class Market:
         heat_v_temp = [[] for i in range(n_flexible_building)]
         elec_v_temp = [[] for i in range(n_flexible_building)]
         cost_v_temp = np.zeros((n_flexible_building, T))
-
         nfb = 0
+
         for asset in mtn.localAssets:
+            if 'InflexibleBuilding' in str(asset.model):
+                for t in range(T):
+                    inflex_elec_neutral[ninfb].append(asset.model.activeVertices[str(MeasurementType.PowerReal)][t].value.power)
+                    inflex_cool_neutral[ninfb].append(asset.model.activeVertices[str(MeasurementType.Cooling)][t].value.power)
+                    inflex_heat_neutral[ninfb].append(asset.model.activeVertices[str(MeasurementType.Heat)][t].value.power)
+                ninfb = ninfb + 1
+
+            if 'SolarPvResourceModel' in str(asset.model):
+                for t in range(T):
+                    solar_prediction[n_PV].append(asset.model.activeVertices[str(MeasurementType.PowerReal)][t].value.power)
+                n_PV = n_PV + 1
+
             if 'FlexibleBuilding' in str(asset.model):
                 for t in range(T):
                     # electrical loads
@@ -344,18 +356,15 @@ class Market:
                     temp_up[nfb].append(asset.model.activeVertices[str(MeasurementType.Heat)][t].value[2].marginalPrice - asset.model.activeVertices[str(MeasurementType.Heat)][t].value[0].marginalPrice)
 
                     # make list loads at each temperature setpoint
-
                     # cooling loads
                     cool_neutral[nfb].append(asset.model.activeVertices[str(MeasurementType.Cooling)][t].value[0].power)
                     cool_lower = asset.model.activeVertices[str(MeasurementType.Cooling)][t].value[1].power - asset.model.activeVertices[str(MeasurementType.Cooling)][t].value[0].power
                     cool_up = asset.model.activeVertices[str(MeasurementType.Cooling)][t].value[2].power - asset.model.activeVertices[str(MeasurementType.Cooling)][t].value[0].power
 
-
                     # heating loads
                     heat_neutral[nfb].append(asset.model.activeVertices[str(MeasurementType.Heat)][t].value[0].power)
                     heat_lower = asset.model.activeVertices[str(MeasurementType.Heat)][t].value[1].power - asset.model.activeVertices[str(MeasurementType.Heat)][t].value[0].power
                     heat_up = asset.model.activeVertices[str(MeasurementType.Heat)][t].value[2].power - asset.model.activeVertices[str(MeasurementType.Heat)][t].value[0].power
-
 
                     # discomfort cost
                     cost_up = asset.model.activeVertices[str(MeasurementType.Heat)][t].value[1].cost
@@ -380,8 +389,8 @@ class Market:
 
         if n_boilers > 0:
             heat_unserve = VariableGroup("heat_unserve", indexes=index_nodes, lower_bound_func=constant_zero)
-
             heat_dump = VariableGroup("heat_dump", indexes=index_nodes, lower_bound_func=constant_zero)
+
         if n_chillers > 0:
             cool_unserve = VariableGroup("cool_unserve", indexes=index_nodes, lower_bound_func=constant_zero)
 
@@ -405,6 +414,9 @@ class Market:
         chiller_x = VariableGroup("chiller_x", indexes=index_chiller, lower_bound_func=constant_zero)  # cooling power output
         chiller_yp = VariableGroup("chiller_yp", indexes=index_chiller, lower_bound_func=constant_zero)  # real electric power demand
 
+        #Solar_PV
+        # index_solarPV = range(n_solar_PV), range(24)
+        # solar_xp = VariableGroup("solar_xp", indexes=index_solarPV, lower_bound_func=constant_zero)  # fuel use
 
         # buildingn temperatuers
         index_temp = range(n_flexible_building), range(T)
@@ -432,6 +444,7 @@ class Market:
                    - cvxpy.sum([inflex_elec_neutral[j][t] for j in range(n_inflexible_building)]) \
                    - cvxpy.sum([elec_neutral[j][t] for j in range(n_flexible_building)]) \
                    - cvxpy.sum([elec_v_temp[j][t] * temp[j, t] for j in range(n_flexible_building)]) \
+                   + cvxpy.sum([solar_prediction[j][t] for j in range(n_solar_PV)]) \
                    + elec_unserve[0, t] == 0
 
         def heat_balance(index):
@@ -507,6 +520,10 @@ class Market:
             j, t = index
             return temp[j, t] >= temp_lower[j][t]
 
+        # def solar_xp_upper(index):
+        #     i, t = index
+        #     return solar_xp[i, t] <= solar_prediction[i][t]
+
         add_constraint("electric_p_balance", index_nodes, electric_p_balance)
         add_constraint("heat_balance", index_nodes, heat_balance)
         add_constraint("cool_balance", index_nodes, cool_balance)
@@ -530,6 +547,10 @@ class Market:
         index_chiller = (range(n_chillers),)
         add_constraint("chiller_yp_consume", index_chiller + index_hour, chiller_yp_consume)
         add_constraint("chiller_x_upper", index_chiller + index_hour, chiller_x_upper)
+
+        # add solar constriants
+        # index_solar = (range(n_solar_PV),)
+        # add_constraint("solar_xp_upper", index_solar + index_hour, solar_xp_upper)
 
         if allow_thermal_slack == False:
             add_constraint("no_slack_h", index_nodes, no_slack_h)
@@ -577,7 +598,6 @@ class Market:
         print('problem created, solving problem')
 
         tic = time.time()
-
         result = prob.solve(solver='ECOS')
 
         toc = time.time() - tic
@@ -590,6 +610,7 @@ class Market:
         boiler_dispatch = []
         chiller_dispatch = []
         flexible_building_dispatch = []
+        # solarPV_dispatch = []
 
         for i in range(len(var_name_list)):
             var_name = var_name_list[i]
@@ -617,6 +638,8 @@ class Market:
                     chiller_dispatch.append(var_val)
                 elif (var_name == 'temp'):
                     flexible_building_dispatch.append(var_val)
+                # elif (var_name == 'solar_xp'):
+                #     solarPV_dispatch.append(var_val)
 
         boiler_idx = 0
         chiller_idx = 0
@@ -624,20 +647,25 @@ class Market:
         dieselgen_idx = 0
         flexible_building_idx = 0
         inflexible_building_idx = 0
+        solar_PV_idx = 0
         for asset in mtn.localAssets:
             if 'boiler' in str(asset.model):
-                asset.model.scheduledPowers[0] = boiler_dispatch[boiler_idx]
+                asset.model.scheduledPowers = {}
+                asset.model.scheduledPowers[str(MeasurementType.Heat)] = boiler_dispatch[boiler_idx]
                 boiler_idx = boiler_idx+1
             elif 'chiller' in str(asset.model):
-                asset.model.scheduledPowers[0] = chiller_dispatch[chiller_idx]
+                asset.model.scheduledPowers = {}
+                asset.model.scheduledPowers[str(MeasurementType.Cooling)] = chiller_dispatch[chiller_idx]
                 chiller_idx = chiller_idx + 1
             elif 'turbine' in str(asset.model):
-                asset.model.scheduledPowers[0] = turbine_dispatch[turbine_idx]
+                asset.model.scheduledPowers = {}
+                asset.model.scheduledPowers[str(MeasurementType.PowerReal)] = turbine_dispatch[turbine_idx]
                 turbine_idx = turbine_idx + 1
             elif 'diesel' in str(asset.model):
                 asset.model.scheduledPowers[0] = dieselgen_dispatch[dieselgen_idx]
                 diesel_idx = dieselgen_idx+1
             elif 'FlexibleBuilding' in str(asset.model):
+                ### To Do: Assign schedule power with correct measurement type
                 T_setpoint = flexible_building_dispatch[flexible_building_idx]
                 asset.model.scheduledPowers[0] = T_setpoint + temp_neutral[flexible_building_idx][0]
                 if T_setpoint <= 0:
@@ -651,14 +679,20 @@ class Market:
                     asset.model.scheduledPowers[2] = cool_neutral[flexible_building_idx][0] + \
                     (asset.model.activeVertices[str(MeasurementType.Cooling)][0].value[2].power - cool_neutral[flexible_building_idx][0])*T_setpoint/temp_lower[flexible_building_idx][0]
                 flexible_building_idx = flexible_building_idx+1
+                self.view_vertices_and_schedules(mtn, asset_type)
             elif 'InflexibleBuilding' in str(asset.model):
-                asset.model.scheduledPowers[0] = inflex_elec_neutral[inflexible_building_idx][0]
-                asset.model.scheduledPowers[1] = inflex_heat_neutral[inflexible_building_idx][0]
-                asset.model.scheduledPowers[2] = inflex_cool_neutral[inflexible_building_idx][0]
+                asset.model.scheduledPowers = {}
+                asset.model.scheduledPowers[str(MeasurementType.PowerReal)] = inflex_elec_neutral[inflexible_building_idx][0]
+                asset.model.scheduledPowers[str(MeasurementType.Heat)] = inflex_heat_neutral[inflexible_building_idx][0]
+                asset.model.scheduledPowers[str(MeasurementType.Cooling)] = inflex_cool_neutral[inflexible_building_idx][0]
                 inflexible_building_idx = inflexible_building_idx+1
+            elif 'SolarPvResourceModel' in str(asset.model):
+                asset.model.scheduledPowers = {}
+                asset.model.scheduledPowers[str(MeasurementType.PowerReal)] = solar_prediction[solar_PV_idx][0]
+                solar_PV_idx = solar_PV_idx + 1
 
-        asset_type = ['FlexibleBuilding']
-        self.view_vertices_and_schedules(mtn, asset_type)
+
+
         print('One Time step solved and vertices are updated with schedules')
 
     def view_vertices_and_schedules(self, mtn, asset_type):

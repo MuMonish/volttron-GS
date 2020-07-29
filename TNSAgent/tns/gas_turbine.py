@@ -2,13 +2,13 @@ import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta, date
 import os
-
 from vertex import Vertex
 from auction import Auction
 from measurement_type import MeasurementType
 from local_asset_model import LocalAssetModel
 from helpers import *
 from interval_value import IntervalValue
+import helics as h
 
 class GasTurbine(LocalAssetModel):
     # Gas Turbine class: also applies to fuel cells and diesel generators
@@ -194,19 +194,28 @@ class GasTurbine(LocalAssetModel):
                 self.activeVertices[str(vertices_type[type_energy])] = []
                 self.activeVertices[str(vertices_type[type_energy])].append(iv)
 
-    def update_dispatch(self, mkt, fed, helics_flag = bool(0)):
-        for i in range(len(self.measurementType)):
-            if self.measurementType[i] == MeasurementType.PowerReal:
-                elec_dispatched = self.scheduledPowers[i]
-            elif self.measurementType[i] == MeasurementType.Heat:
-                heat_dispatched = self.scheduledPowers[i]
-            elif self.measurementType[i] == MeasurementType.Cooling:
-                cool_dispatched = self.scheduledPowers[i]
+    def update_dispatch(self, mkt, fed = None, helics_flag = bool(0)):
 
+        elec_dispatched = self.scheduledPowers[str(MeasurementType.PowerReal)]
         gas_consumed = self.use_fit_curve(self.fit_curve['coefs_e'],elec_dispatched)
         cost = mkt.gas_rate * gas_consumed
-        interval = mkt.marketClearingTime.strftime('%Y%m%dT%H%M%S')
 
+        if helics_flag == True:
+            key1 = "WSU_C_GLD_" + self.name + "_power_A"
+            key2 = "WSU_C_GLD_" + self.name + "_power_B"
+            key3 = "WSU_C_GLD_" + self.name + "_power_C"
+            try:
+                pubA = h.helicsFederateGetPublication(fed, key1)
+                pubB = h.helicsFederateGetPublication(fed, key2)
+                pubC = h.helicsFederateGetPublication(fed, key3)
+                status = h.helicsPublicationPublishComplex(pubA, -1*elec_dispatched*1000/3, 0)
+                status = h.helicsPublicationPublishComplex(pubB, -1*elec_dispatched*1000/3, 0)
+                status = h.helicsPublicationPublishComplex(pubC, -1*elec_dispatched*1000/3, 0)
+                print('Data {} Published to GLD {} via Helics -->'.format(-1*elec_dispatched*1000, self.name))
+            except:
+                print('Publication was not registered')
+
+        interval = mkt.marketClearingTime.strftime('%Y%m%dT%H%M%S')
         line_new =  str(mkt.marketClearingTime) + "," + str(interval) + "," + str(elec_dispatched) +  "," + str(gas_consumed) + "," + str(cost) + " \n"
         file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
         try:
