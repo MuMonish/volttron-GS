@@ -34,8 +34,8 @@ class GasTurbine(LocalAssetModel):
         self.thermalFluid = 'steam' # CHP gas turbines reject waste heat to steam for heat recovery
         self.vertices = [[] for et in energy_types]# vertices that define the capacity vs. fuel use of the CHP
         self.scheduledPowers = [[] for et in energy_types]# float indicating the cooling power setpoint
-
-         
+        self.record = {}  # added by Nathan Gray to record simulation results.
+        # self.record is filled in the update_dispatch method.
 
     def create_default_vertices(self, ti, mkt):
         # create the vertices that define the system generally:
@@ -194,7 +194,7 @@ class GasTurbine(LocalAssetModel):
                 self.activeVertices[str(vertices_type[type_energy])] = []
                 self.activeVertices[str(vertices_type[type_energy])].append(iv)
 
-    def update_dispatch(self, mkt, fed = None, helics_flag = bool(0)):
+    def update_dispatch(self, mkt, fed=None, helics_flag=bool(0)):
 
         elec_dispatched = self.scheduledPowers[str(MeasurementType.PowerReal)]
         gas_consumed = self.use_fit_curve(self.fit_curve['coefs_e'],elec_dispatched)
@@ -216,19 +216,38 @@ class GasTurbine(LocalAssetModel):
                 print('Publication was not registered')
 
         interval = mkt.marketClearingTime.strftime('%Y%m%dT%H%M%S')
-        line_new =  str(mkt.marketClearingTime) + "," + str(interval) + "," + str(elec_dispatched) +  "," + str(gas_consumed) + "," + str(cost) + " \n"
-        file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
-        try:
-            with open(file_name, 'a') as f:
-                f.writelines(line_new)
-        except:
-                f = open(file_name, "w")
-                f.writelines("TimeStamp,TimeInterval,Electricity Dispatched,Gas Consumed,Cost\n")
-                f.writelines(line_new)
-        f.close()
 
-
-
+        if len(self.record.keys()) == 0:
+            self.record['TimeStamp']=[]
+            self.record['TimeInterval']=[]
+            self.record['Electricity Dispatched']=[]
+            self.record['Gas Consumed']=[]
+            self.record['Cost']=[]
+        self.record['TimeStamp'].append(str(mkt.marketClearingTime))
+        self.record['TimeInterval'].append(str(interval))
+        self.record['Electricity Dispatched'].append(str(elec_dispatched))
+        self.record['Gas Consumed'].append(str(gas_consumed))
+        self.record['Cost'].append(str(cost))
+        # line_new =  str(mkt.marketClearingTime) + "," + str(interval) + "," + str(elec_dispatched) +  "," + str(gas_consumed) + "," + str(cost) + " \n"
+        # file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
+        # try:
+        #     with open(file_name, 'a') as f:
+        #         f.writelines(line_new)
+        # except:
+        #     f = open(file_name, "w")
+        #     f.writelines("TimeStamp,TimeInterval,Electricity Dispatched,Gas Consumed,Cost\n")
+        #     f.writelines(line_new)
+        #     # Add file location to index of outputs
+        #     index_file_name = os.getcwd() + '/Outputs/gt_index.csv'
+        #     try:
+        #         with open(index_file_name, 'a') as indx_f:
+        #             indx_f.writelines(self.name + ',' + file_name)
+        #     except:
+        #         indx_f = open(index_file_name, "w")
+        #         indx_f.writelines("assetName, FileName\n")
+        #         indx_f.writelines(self.name + ',' + file_name)
+        #     indx_f.close()
+        # f.close()
 
     def update_active_vertex(self, Esetpoint, Hsetpoint, Tamb, e_cost, h_cost, fuel_price, ti, mkt):
         # find the electrical and heating vertices that are active given the heat and 
@@ -345,7 +364,6 @@ class GasTurbine(LocalAssetModel):
         # update agent state
         self.activeVertices = [[active_vertices_e],[active_vertices_h]]
 
-
     def find_max_heatrecovered(self, e_setpoint=None):
         # the heat recovered is limited by the generator setpoint. If more waste heat is desired than 
         # this limit, the generator must ramp up incuring a cost. Less heat however, may not incur a lower cost
@@ -374,7 +392,6 @@ class GasTurbine(LocalAssetModel):
 
         # return value
         return max_heat_recovered
-
 
     def find_massflow(self, auc):
         # find the mass flowrate of steam through the heat recovery system to meet the 

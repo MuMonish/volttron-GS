@@ -87,6 +87,8 @@ class SolarPvResourceModel(LocalAssetModel, object):
         self.energy_type = ['electricity']
         self.vertices = [[] for et in energy_types] # list of vertex class instances defining the efficiency curve
         self.activeVertices = [[] for et in energy_types] #list of Vertex class instances defining the cost vs. power used
+        self.record = {}  # added by Nathan Gray to record simulation results.
+        # self.record is filled in the update_dispatch method.
 
     def make_solar_forecast(self, mkt):
 
@@ -172,17 +174,34 @@ class SolarPvResourceModel(LocalAssetModel, object):
                 print('Publication was not registered')
 
         interval = mkt.marketClearingTime.strftime('%Y%m%dT%H%M%S')
-        line_new =  str(mkt.marketClearingTime) + "," + str(interval) + "," + str(-1*elec_dispatched) + " \n"
-        file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
-        try:
-            with open(file_name, 'a') as f:
-                f.writelines(line_new)
-        except:
-                f = open(file_name, "w")
-                f.writelines("TimeStamp,TimeInterval,Electricity Dispatched\n")
-                f.writelines(line_new)
-        f.close()
 
+        if len(self.record.keys()) == 0:
+            self.record['TimeStamp']=[]
+            self.record['TimeInterval']=[]
+            self.record['Electricity Dispatched']=[]
+        self.record['TimeStamp'].append(str(mkt.marketClearingTime))
+        self.record['TimeInterval'].append(str(interval))
+        self.record['Electricity Dispatched'].append(str(elec_dispatched))
+        # line_new =  str(mkt.marketClearingTime) + "," + str(interval) + "," + str(-1*elec_dispatched) + " \n"
+        # file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
+        # try:
+        #     with open(file_name, 'a') as f:
+        #         f.writelines(line_new)
+        # except:
+        #     f = open(file_name, "w")
+        #     f.writelines("TimeStamp,TimeInterval,Electricity Dispatched\n")
+        #     f.writelines(line_new)
+        #     # Add file location to index of outputs
+        #     index_file_name = os.getcwd() + '/Outputs/pv_index.csv'
+        #     try:
+        #         with open(index_file_name, 'a') as indx_f:
+        #             indx_f.writelines(self.name + ',' + file_name)
+        #     except:
+        #         indx_f = open(index_file_name, "w")
+        #         indx_f.writelines("assetName, FileName\n")
+        #         indx_f.writelines(self.name + ',' + file_name)
+        #     indx_f.close()
+        # f.close()
 
     def schedule_power(self, mkt):
         # Estimate stochastic generation from a solar

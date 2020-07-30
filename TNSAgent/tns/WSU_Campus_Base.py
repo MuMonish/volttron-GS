@@ -31,6 +31,8 @@ from helics_functions import register_federate
 from helics_functions import destroy_federate
 import helics as h
 
+from dash_plotter import create_dash_app
+import pandas as pd
 # create a neighbor model
 WSU_Campus = myTransactiveNode()
 mTN = WSU_Campus
@@ -707,7 +709,7 @@ json_filename = create_config_for_helics(dayAhead.name,
                                          config_for_gridlabd=True)
 
 print(json_filename)
-helics_flag = True
+helics_flag = False
 
 if helics_flag:
     broker = create_broker(number_federates=2)
@@ -777,4 +779,14 @@ if helics_flag:
     destroy_federate(fed)
 ############################################################################
 
+############################ Save results to CSVs  ##############################
+for asset in mTN.localAssets:
+    if asset.model is not None:
+        df = pd.DataFrame(asset.model.record)
+        df.to_csv('Outputs/'+asset.model.name+'_output.csv', sep=',', index=False)
+############################################################################
 
+############################ Start Dash Visualizer  ##############################
+app = create_dash_app(local_assets=mTN.localAssets)
+app.run_server()
+############################################################################

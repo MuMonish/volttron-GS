@@ -33,7 +33,8 @@ class InflexibleBuilding(LocalAssetModel):
         self.thermalFluid = [None, 'steam', 'water'] # thermal fluids assocated with the energy types
         self.Tset = 23 # temperature setpoint, this setpoint is always met
         self.vertices = [[] for et in energy_types] # vertices always describe infinite cost of not meeting demand
-
+        self.record = {}  # added by Nathan Gray to record simulation results.
+        # self.record is filled in the update_dispatch method.
 
     def create_default_vertices(self, ti, mkt):
         # creaate vertices that are use on instantiation and whenever communication is lost
@@ -85,7 +86,6 @@ class InflexibleBuilding(LocalAssetModel):
 
         print("Read Vertices from Inflexible building data for {}".format(self.name))
 
-
     def get_active_vertices_from_inflexible_CESI_building(self, mkt):
         # creates active vertices for the current time from the stored vertices
         # INPUTS:
@@ -110,7 +110,6 @@ class InflexibleBuilding(LocalAssetModel):
 
         print("Read Active Vertices for {}".format(self.name))
 
-
     def update_dispatch(self, mkt, fed=None, helics_flag = bool(0)):
 
         elec_dispatched = self.scheduledPowers[str(MeasurementType.PowerReal)]*1000
@@ -134,16 +133,37 @@ class InflexibleBuilding(LocalAssetModel):
             except:
                 print('Publication was not registered')
 
-        line_new =  str(mkt.marketClearingTime) + "," + str(interval) + "," + str(elec_dispatched) +  "," + str(heat_dispatched) + "," + str(cool_dispatched) + " \n"
-        file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
-        try:
-            with open(file_name, 'a') as f:
-                f.writelines(line_new)
-        except:
-                f = open(file_name, "w")
-                f.writelines("TimeStamp,TimeInterval,Electricity Dispatched,Heat Dispatched,Cooling Dispatched\n")
-                f.writelines(line_new)
-        f.close()
+        if len(self.record.keys()) == 0:
+            self.record['TimeStamp']=[]
+            self.record['TimeInterval']=[]
+            self.record['Electricity Dispatched']=[]
+            self.record['Heat Dispatched']=[]
+            self.record['Cooling Dispatched']=[]
+        self.record['TimeStamp'].append(str(mkt.marketClearingTime))
+        self.record['TimeInterval'].append(str(interval))
+        self.record['Electricity Dispatched'].append(str(elec_dispatched))
+        self.record['Heat Dispatched'].append(str(heat_dispatched))
+        self.record['Cooling Dispatched'].append(str(cool_dispatched))
+        # line_new =  str(mkt.marketClearingTime) + "," + str(interval) + "," + str(elec_dispatched) +  "," + str(heat_dispatched) + "," + str(cool_dispatched) + " \n"
+        # file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
+        # try:
+        #     with open(file_name, 'a') as f:
+        #         f.writelines(line_new)
+        # except:
+        #     f = open(file_name, "w")
+        #     f.writelines("TimeStamp,TimeInterval,Electricity Dispatched,Heat Dispatched,Cooling Dispatched\n")
+        #     f.writelines(line_new)
+        #     # Add file location to index of outputs
+        #     index_file_name = os.getcwd() + '/Outputs/inflexible_index.csv'
+        #     try:
+        #         with open(index_file_name, 'a') as indx_f:
+        #             indx_f.writelines(self.name + ',' + file_name)
+        #     except:
+        #         indx_f = open(index_file_name, "w")
+        #         indx_f.writelines("assetName, FileName\n")
+        #         indx_f.writelines(self.name + ',' + file_name)
+        #     indx_f.close()
+        # f.close()
 
     def update_active_vertex(self, ti, mkt):
         # update the active vertices based on the load forecast
@@ -276,9 +296,6 @@ class InflexibleBuilding(LocalAssetModel):
         if 'Tset' in self.historicalProfile:
             Tset = np.interp(datestamp, self.historicalProfile['timestamp'], self.historicalProfile['Tset'])
             self.Tset = Tset
-
-
-
 
     def find_massflow_steam(self):
         # find the steam massflow rate required to meet the heat load

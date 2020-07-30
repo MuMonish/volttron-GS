@@ -10,7 +10,8 @@ from helpers import *
 from market import Market
 from time_interval import TimeInterval
 from local_asset import LocalAsset
-
+import csv  # added by Nathan Gray
+import os  # added by Nathan Gray
 
 class LocalAssetModel(Model, object):
     # LocalAssetModel Base Class
@@ -50,7 +51,7 @@ class LocalAssetModel(Model, object):
         self.dualCosts = [[] for et in energy_types]
         self.reserveMargins = [[] for et in energy_types]
         self.scheduledPowers = [[] for et in energy_types]
-        self.transitionCosts = [[] for et in energy_types] # IntervalValue.empty  # values are [$]
+        self.transitionCosts = [[] for et in energy_types]  # IntervalValue.empty  # values are [$]
 
     def cost(self, p):
         # def COST()

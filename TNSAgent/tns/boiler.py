@@ -9,6 +9,7 @@ from measurement_type import MeasurementType
 from local_asset_model import LocalAssetModel
 from helpers import *
 from interval_value import IntervalValue
+import pandas as pd
 
 class Boiler(LocalAssetModel):
     #Boiler Class
@@ -31,6 +32,8 @@ class Boiler(LocalAssetModel):
         self.thermalFluid = 'steam' # string: always steam for boiler
         self.vertices = [[] for et in energy_types] #list of Vertex class instances defining the efficiency curve
         self.scheduledPowers = [[] for et in energy_types]# float indicating the setpoint
+        self.record = {}  # added by Nathan Gray to record simulation results.
+        # self.record is filled in the update_dispatch method.
 
     def create_default_vertices(self, ti, mkt):
         # create the vertices that define the system generally:
@@ -77,8 +80,6 @@ class Boiler(LocalAssetModel):
         # initialize active vertices
         #self.activeVertices = self.vertices
         #self.defaultVertices = self.vertices
-
-
 
     def make_fit_curve(self):
         #find the vertices that describe a fit function of the power vs. heat data
@@ -169,23 +170,45 @@ class Boiler(LocalAssetModel):
                 self.activeVertices[str(vertices_type[type_energy])] = []
                 self.activeVertices[str(vertices_type[type_energy])].append(iv)
 
-    def update_dispatch(self, mkt, fed=None, helics_flag = bool(0)):
+    def update_dispatch(self, mkt, fed=None, helics_flag=bool(0)):
 
         heat_dispatched = self.scheduledPowers[str(MeasurementType.Heat)]
         gas_consumed = self.use_fit_curve(heat_dispatched)
         cost = mkt.gas_rate * gas_consumed
 
         interval = mkt.marketClearingTime.strftime('%Y%m%dT%H%M%S')
-        line_new =  str(mkt.marketClearingTime) + "," + str(interval) + "," + str(heat_dispatched) +  "," + str(gas_consumed) + "," + str(cost) + " \n"
-        file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
-        try:
-            with open(file_name, 'a') as f:
-                f.writelines(line_new)
-        except:
-                f = open(file_name, "w")
-                f.writelines("TimeStamp,TimeInterval,Heat Dispatched,Gas Consumed,Cost\n")
-                f.writelines(line_new)
-        f.close()
+
+        if len(self.record.keys()) == 0:
+            self.record['TimeStamp']=[]
+            self.record['TimeInterval']=[]
+            self.record['Heat Dispatched']=[]
+            self.record['Gas Consumed']=[]
+            self.record['Cost']=[]
+        self.record['TimeStamp'].append(str(mkt.marketClearingTime))
+        self.record['TimeInterval'].append(str(interval))
+        self.record['Heat Dispatched'].append(str(heat_dispatched))
+        self.record['Gas Consumed'].append(str(gas_consumed))
+        self.record['Cost'].append(str(cost))
+        # line_new =  str(mkt.marketClearingTime) + "," + str(interval) + "," + str(heat_dispatched) +  "," + str(gas_consumed) + "," + str(cost) + " \n"
+        # file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
+        # try:
+        #     with open(file_name, 'a') as f:
+        #         f.writelines(line_new)
+        # except:
+        #     f = open(file_name, "w")
+        #     f.writelines("TimeStamp,TimeInterval,Heat Dispatched,Gas Consumed,Cost\n")
+        #     f.writelines(line_new)
+        #     # Add file location to index of outputs
+        #     index_file_name = os.getcwd() + '/Outputs/boiler_index.csv'
+        #     try:
+        #         with open(index_file_name, 'a') as indx_f:
+        #             indx_f.writelines(self.name + ',' + file_name)
+        #     except:
+        #         indx_f = open(index_file_name, "w")
+        #         indx_f.writelines("assetName, FileName\n")
+        #         indx_f.writelines(self.name + ',' + file_name)
+        #     indx_f.close()
+        # f.close()
 
     def update_active_vertex(self,Hsetpoint,Tamb,fuel_price, auc, ti):
         #find the vertics that are active given the heat setpoints

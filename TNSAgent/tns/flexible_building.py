@@ -39,6 +39,24 @@ class FlexibleBuilding(LocalAssetModel):
         self.Tub = 25 # temperature upper limit before incurring extreme deviation costs
         self.vertices = [] # vertices describing marginal cost pricing
         self.receivedSignal = []
+        self.record = {}  # added by Nathan Gray to record simulation results.
+        # self.record is filled in the update_dispatch method.
+
+    def create_output_csv(self):  # Added by Nathan Gray to record simulation results
+        """
+        Call this method at the end of the simulation to save results to a csv.
+        """
+        csv_columns = list(self.record.keys())
+        dict_data = self.record
+        csv_file = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
+        try:
+            with open(csv_file, 'w') as csvfile:
+                writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
+                writer.writeheader()
+                for data in dict_data:
+                    writer.writerow(data)
+        except IOError:
+            print("I/O error")
 
     def find_deviation_cost(self, Tactual=None, find_limit=False, ti=None):
         #make the curves that describe the cost of deviating from the original load
@@ -344,15 +362,37 @@ class FlexibleBuilding(LocalAssetModel):
             status = h.helicsPublicationPublishString(pub, pub_data)
             print('Data {} Published to EAGERS {} via Helics -->'.format(pub_data, target_node))
 
-        file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
-        try:
-            with open(file_name, 'a') as f:
-                f.writelines(new_line)
-        except:
-                f = open(file_name, "w")
-                f.writelines(header)
-                f.writelines(new_line)
-        f.close()
+        if len(self.record.keys()) == 0:
+            self.record['TimeStamp']=[]
+            self.record['TimeInterval']=[]
+            self.record['Temperature Setpoint Dispatched']=[]
+            self.record['Heat Dispatched']=[]
+            self.record['Cooling Dispatched']=[]
+        self.record['TimeStamp'].append(str(mkt.marketClearingTime))
+        self.record['TimeInterval'].append(str(interval))
+        self.record['Temperature Setpoint Dispatched'].append(str(elec_dispatched))  # TODO: Check this. Temp or elec?
+        self.record['Heat Dispatched'].append(str(heat_dispatched))
+        self.record['Cooling Dispatched'].append(str(cool_dispatched))
+
+        # file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
+        # try:
+        #     with open(file_name, 'a') as f:
+        #         f.writelines(new_line)
+        # except:
+        #     f = open(file_name, "w")
+        #     f.writelines(header)
+        #     f.writelines(new_line)
+        #     # Add file location to index of outputs
+        #     index_file_name = os.getcwd() + '/Outputs/flexible_index.csv'
+        #     try:
+        #         with open(index_file_name, 'a') as indx_f:
+        #             indx_f.writelines(self.name + ',' + file_name)
+        #     except:
+        #         indx_f = open(index_file_name, "w")
+        #         indx_f.writelines("assetName, FileName\n")
+        #         indx_f.writelines(self.name + ',' + file_name)
+        #     indx_f.close()
+        # f.close()
 
 
 

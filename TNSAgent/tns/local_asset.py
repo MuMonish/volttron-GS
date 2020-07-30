@@ -58,4 +58,5 @@
 
 
 class LocalAsset:
-    pass
+    def __init__(self):
+        self.model = None

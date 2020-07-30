@@ -1,7 +1,7 @@
 import numpy as np 
 import pandas as pd
 import os
-#import csv
+import csv
 from datetime import datetime, timedelta, date, time
 from thermal_agent_model import ThermalAgentModel
 from vertex import Vertex
@@ -38,7 +38,9 @@ class Chiller(LocalAssetModel):
         self.measurementType = energy_types
         #self.defaultPower = [[]]*len(energy_type)
         self.engagementSchedule = [[] for et in energy_types]
-        # fit curves may map to range of temperatures, so they also contain mins and maxs    
+        # fit curves may map to range of temperatures, so they also contain mins and maxs
+        self.record = {}  # added by Nathan Gray to record simulation results.
+        # self.record is filled in the update_dispatch method.
     
     def create_default_vertices(self, ti, mkt):
         # create the vertices that define the efficiency curve as a relationship between 
@@ -86,7 +88,6 @@ class Chiller(LocalAssetModel):
         # initialize active vertices
         self.activeVertices = self.vertices
         self.defaultVertices = self.vertices
-
 
     def make_fit_curve(self):
         #find the vertices that describe a fit function of the electrical power vs. 
@@ -189,16 +190,38 @@ class Chiller(LocalAssetModel):
                 print('Publication was not registered')
 
         interval = mkt.marketClearingTime.strftime('%Y%m%dT%H%M%S')
-        line_new = str(mkt.marketClearingTime) + "," + str(interval) + "," + str(cool_dispatched) + "," + str(elec_consumed) + "," + str(cost) + " \n"
-        file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
-        try:
-            with open(file_name, 'a') as f:
-                f.writelines(line_new)
-        except:
-                f = open(file_name, "w")
-                f.writelines("TimeStamp,TimeInterval,Cool Dispatched,Electricity Consumed,Cost\n")
-                f.writelines(line_new)
-        f.close()
+
+        if len(self.record.keys()) == 0:
+            self.record['TimeStamp']=[]
+            self.record['TimeInterval']=[]
+            self.record['Cool Dispatched']=[]
+            self.record['Electricity Consumed']=[]
+            self.record['Cost']=[]
+        self.record['TimeStamp'].append(str(mkt.marketClearingTime))
+        self.record['TimeInterval'].append(str(interval))
+        self.record['Cool Dispatched'].append(str(cool_dispatched))
+        self.record['Electricity Consumed'].append(str(elec_consumed))
+        self.record['Cost'].append(str(cost))
+        # line_new = str(mkt.marketClearingTime) + "," + str(interval) + "," + str(cool_dispatched) + "," + str(elec_consumed) + "," + str(cost) + " \n"
+        # file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
+        # try:
+        #     with open(file_name, 'a') as f:
+        #         f.writelines(line_new)
+        # except:
+        #     f = open(file_name, "w")
+        #     f.writelines("TimeStamp,TimeInterval,Cool Dispatched,Electricity Consumed,Cost\n")
+        #     f.writelines(line_new)
+        #     # Add file location to index of outputs
+        #     index_file_name = os.getcwd() + '/Outputs/chiller_index.csv'
+        #     try:
+        #         with open(index_file_name, 'a') as indx_f:
+        #             indx_f.writelines(self.name + ',' + file_name)
+        #     except:
+        #         indx_f = open(index_file_name, "w")
+        #         indx_f.writelines("assetName, FileName\n")
+        #         indx_f.writelines(self.name + ',' + file_name)
+        #     indx_f.close()
+        # f.close()
 
 
     def use_fit_curve(self, setpoint):
