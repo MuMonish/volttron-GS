@@ -19,6 +19,7 @@ class Chiller(LocalAssetModel):
     # the neighbor_model negotiates with for electrical power
     def __init__(self, name = None, size=0.0, energy_types = [MeasurementType.Cooling, MeasurementType.PowerReal]):
         super(Chiller,self).__init__(energy_types=energy_types)
+        self.model_type = 'Chiller'
         self.name = name 
         self.size = size # size of system in kW of cooling
         self.min_capacity = 0.0 # minimum operating capacity of chillers

@@ -3,6 +3,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import pandas as pd
 import plotly.express as px
+import pickle
 
 def create_dash_app(local_assets=None):
     options = [

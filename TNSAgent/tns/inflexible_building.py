@@ -1,4 +1,4 @@
-import numpy as np 
+import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta, date
 import os
@@ -11,28 +11,30 @@ from helpers import *
 from time_interval import TimeInterval
 import helics as h
 
+
 class InflexibleBuilding(LocalAssetModel):
     # InflexibleBuilding class describes the behavior of a building without
     # any load flexibility. The building provides loads to the thermal auctions
     # and to the electrical node with which it is associated.
     # only one vertex is ever signaled per load type
-    def __init__(self, energy_types = [MeasurementType.PowerReal, MeasurementType.Heat, MeasurementType.Cooling]):
+    def __init__(self, energy_types=[MeasurementType.PowerReal, MeasurementType.Heat, MeasurementType.Cooling]):
         super(InflexibleBuilding, self).__init__(energy_types=energy_types)
+        self.model_type = 'InflexibleBuilding'
         self.activeVertices = [[] for et in energy_types]
-        self.datestamp = datetime(2010,1,1,0,0,0)
+        self.datestamp = datetime(2010, 1, 1, 0, 0, 0)
         self.defaultVertices = [[] for et in energy_types]
         self.dualCosts = [[] for et in energy_types]
-        self.historicalProfile = None # historical load profiles from xlsx
-        self.internal_mass = 1000 # mCp portion of mCp(T1-T0) equation representing building internal mass
-        self.loadForecast = [0.0]*len(energy_types) # electrical load in kW
-        self.mass_flowrate = [None, 0.0, 0.0] # mass flowrate of thermal fluids to meet demand
-        self.measurementType = energy_types # types of energy demand
+        self.historicalProfile = None  # historical load profiles from xlsx
+        self.internal_mass = 1000  # mCp portion of mCp(T1-T0) equation representing building internal mass
+        self.loadForecast = [0.0] * len(energy_types)  # electrical load in kW
+        self.mass_flowrate = [None, 0.0, 0.0]  # mass flowrate of thermal fluids to meet demand
+        self.measurementType = energy_types  # types of energy demand
         self.name = None
-        self.neighborModel = None # electrical neighbor node model
+        self.neighborModel = None  # electrical neighbor node model
         self.thermalAuction = None
-        self.thermalFluid = [None, 'steam', 'water'] # thermal fluids assocated with the energy types
-        self.Tset = 23 # temperature setpoint, this setpoint is always met
-        self.vertices = [[] for et in energy_types] # vertices always describe infinite cost of not meeting demand
+        self.thermalFluid = [None, 'steam', 'water']  # thermal fluids assocated with the energy types
+        self.Tset = 23  # temperature setpoint, this setpoint is always met
+        self.vertices = [[] for et in energy_types]  # vertices always describe infinite cost of not meeting demand
         self.record = {}  # added by Nathan Gray to record simulation results.
         # self.record is filled in the update_dispatch method.
 
@@ -58,7 +60,7 @@ class InflexibleBuilding(LocalAssetModel):
         # vertices: the default minimum and maximum limit vertices
         inflexible_building_folder = os.getcwd() + '/buildings/'
         csv_name = self.name + '_buildings.csv'
-        filename = inflexible_building_folder+csv_name
+        filename = inflexible_building_folder + csv_name
         self.vertices = {}
 
         mkt_time = mkt.marketClearingTime
@@ -66,14 +68,15 @@ class InflexibleBuilding(LocalAssetModel):
             reader = csv.DictReader(file)
             for row in reader:
                 timestamp_data = datetime.strptime(row['timestamp'], '%m/%d/%Y %H:%M:%S')
-                if mkt_time >= (mkt.marketClearingTime + mkt.futureHorizon + (mkt.intervalsToClear*mkt.intervalDuration)):
+                if mkt_time >= (
+                        mkt.marketClearingTime + mkt.futureHorizon + (mkt.intervalsToClear * mkt.intervalDuration)):
                     break
                 if timestamp_data == mkt_time:
                     neutral_vertex_e = Vertex(marginal_price=float('inf'), prod_cost=0.0, power=float(row['E']))
                     neutral_vertex_h = Vertex(marginal_price=float('inf'), prod_cost=0.0, power=float(row['H']))
                     neutral_vertex_c = Vertex(marginal_price=float('inf'), prod_cost=0.0, power=float(row['C']))
 
-                    vertices_val = [neutral_vertex_e, neutral_vertex_h,neutral_vertex_c]
+                    vertices_val = [neutral_vertex_e, neutral_vertex_h, neutral_vertex_c]
                     vertices_type = [MeasurementType.PowerReal, MeasurementType.Heat, MeasurementType.Cooling]
                     for type_energy, vert in enumerate(vertices_val):
                         iv = IntervalValue(self, mkt_time, mkt, MeasurementType.ActiveVertex, vert)
@@ -98,23 +101,23 @@ class InflexibleBuilding(LocalAssetModel):
             mkt_time = mkt.marketClearingTime
 
             for iv in self.vertices[type_energy]:
-                if  mkt_time >= (mkt.marketClearingTime + mkt.futureHorizon):
+                if mkt_time >= (mkt.marketClearingTime + mkt.futureHorizon):
                     break
                 if iv.timeInterval == mkt_time:
                     if type_energy in self.activeVertices:
                         self.activeVertices[type_energy].append(iv)
                     else:
-                        self.activeVertices[type_energy]= []
+                        self.activeVertices[type_energy] = []
                         self.activeVertices[type_energy].append(iv)
                     mkt_time = mkt_time + mkt.intervalDuration
 
         print("Read Active Vertices for {}".format(self.name))
 
-    def update_dispatch(self, mkt, fed=None, helics_flag = bool(0)):
+    def update_dispatch(self, mkt, fed=None, helics_flag=bool(0)):
 
-        elec_dispatched = self.scheduledPowers[str(MeasurementType.PowerReal)]*1000
-        heat_dispatched = self.scheduledPowers[str(MeasurementType.Heat)]*1000
-        cool_dispatched = self.scheduledPowers[str(MeasurementType.Cooling)]*1000
+        elec_dispatched = self.scheduledPowers[str(MeasurementType.PowerReal)] * 1000
+        heat_dispatched = self.scheduledPowers[str(MeasurementType.Heat)] * 1000
+        cool_dispatched = self.scheduledPowers[str(MeasurementType.Cooling)] * 1000
 
         interval = mkt.marketClearingTime.strftime('%Y%m%dT%H%M%S')
 
@@ -126,24 +129,24 @@ class InflexibleBuilding(LocalAssetModel):
                 pubA = h.helicsFederateGetPublication(fed, key1)
                 pubB = h.helicsFederateGetPublication(fed, key2)
                 pubC = h.helicsFederateGetPublication(fed, key3)
-                status = h.helicsPublicationPublishComplex(pubA, elec_dispatched/3, 0)
-                status = h.helicsPublicationPublishComplex(pubB, elec_dispatched/3, 0)
-                status = h.helicsPublicationPublishComplex(pubC, elec_dispatched/3, 0)
+                status = h.helicsPublicationPublishComplex(pubA, elec_dispatched / 3, 0)
+                status = h.helicsPublicationPublishComplex(pubB, elec_dispatched / 3, 0)
+                status = h.helicsPublicationPublishComplex(pubC, elec_dispatched / 3, 0)
                 print('Data {} Published to GLD {} via Helics -->'.format(elec_dispatched, self.name))
             except:
                 print('Publication was not registered')
 
         if len(self.record.keys()) == 0:
-            self.record['TimeStamp']=[]
-            self.record['TimeInterval']=[]
-            self.record['Electricity Dispatched']=[]
-            self.record['Heat Dispatched']=[]
-            self.record['Cooling Dispatched']=[]
+            self.record['TimeStamp'] = []
+            self.record['TimeInterval'] = []
+            self.record['Electricity Dispatched'] = []
+            self.record['Heat Dispatched'] = []
+            self.record['Cool Dispatched'] = []
         self.record['TimeStamp'].append(str(mkt.marketClearingTime))
         self.record['TimeInterval'].append(str(interval))
         self.record['Electricity Dispatched'].append(str(elec_dispatched))
         self.record['Heat Dispatched'].append(str(heat_dispatched))
-        self.record['Cooling Dispatched'].append(str(cool_dispatched))
+        self.record['Cool Dispatched'].append(str(cool_dispatched))
         # line_new =  str(mkt.marketClearingTime) + "," + str(interval) + "," + str(elec_dispatched) +  "," + str(heat_dispatched) + "," + str(cool_dispatched) + " \n"
         # file_name = os.getcwd() + '/Outputs/' + self.name + '_output.csv'
         # try:
@@ -185,12 +188,12 @@ class InflexibleBuilding(LocalAssetModel):
         if MeasurementType.Cooling in self.measurementType:
             self.find_massflow_water()
 
-        #read in values
+        # read in values
         for i_energy_type in range(len(self.measurementType)):
             this_energy_type = self.measurementType[i_energy_type]
             load = self.loadForecast[i_energy_type]
-            
-            vertices_val = Vertex(marginal_price=float('inf'), prod_cost=float('inf'), power = -load)
+
+            vertices_val = Vertex(marginal_price=float('inf'), prod_cost=float('inf'), power=-load)
             # e_load = self.loadForecast[0]
             # h_load = self.loadForecast[1]
             # c_load = self.loadForecast[2]
@@ -200,14 +203,14 @@ class InflexibleBuilding(LocalAssetModel):
             #     h_market_price = h_auc.model.marginal_price_from_vertices(h_load, h_auc.model.defaultVertices[0])
             # else:
             #     h_market_price = h_auc.model.marginal_price_from_vertices(h_load, h_auc.model.activeVertices[0])
-            
+
             # if c_auc.model.activeVertices[0]==[]:
             #     c_market_price = c_auc.model.marginal_price_from_vertices(c_load, c_auc.model.defaultVertices[0])
             # else:
             #     c_market_price = c_auc.model.marginal_price_from_vertices(c_load, c_auc.model.activeVertices[0])
 
             # datestamp = self.datestamp
-            
+
             # # inflexible buildings only bid one vertex
             # vertices_val = [[],[],[]]
             # vertices_val[0] = Vertex(marginal_price=float('inf'), prod_cost=float('inf'), power = -e_load)
@@ -255,24 +258,24 @@ class InflexibleBuilding(LocalAssetModel):
         # there is a csv with the same name as the building object which has historical
         # load data in the format:
         # date, temperature, electric load, heat load, cooling load
-        datestamp = ti.timeStamp.toordinal()-365*10-2 #self.datestamp.toordinal()
+        datestamp = ti.timeStamp.toordinal() - 365 * 10 - 2  # self.datestamp.toordinal()
 
         # load historical data if you are on the first timestep
         if self.historicalProfile == None:
             try:
                 filename = '/' + self.name + '.xlsx'
-                datafile = pd.read_excel(os.getcwd()+filename)
+                datafile = pd.read_excel(os.getcwd() + filename)
             except:
-                datafile = pd.read_excel(os.getcwd()+'/test_data/wsu_campus_2009_2012.xlsx')
+                datafile = pd.read_excel(os.getcwd() + '/test_data/wsu_campus_2009_2012.xlsx')
             hist_profile = {}
             if MeasurementType.PowerReal in self.measurementType:
-                e_load = datafile[self.name+'_E']
+                e_load = datafile[self.name + '_E']
                 hist_profile['e_load'] = e_load
             if MeasurementType.Heat in self.measurementType:
-                h_load = datafile[self.name+'_H']
+                h_load = datafile[self.name + '_H']
                 hist_profile['h_load'] = h_load
             if MeasurementType.Cooling in self.measurementType:
-                c_load = datafile[self.name+'_C']
+                c_load = datafile[self.name + '_C']
                 hist_profile['c_load'] = c_load
             hist_profile['timestamp'] = datafile['timestamp']
             self.historicalProfile = hist_profile
@@ -281,7 +284,7 @@ class InflexibleBuilding(LocalAssetModel):
         if 'e_load' in self.historicalProfile and MeasurementType.PowerReal in self.measurementType:
             i_energy_type = self.measurementType.index(MeasurementType.PowerReal)
             loadForecast_e = np.interp(datestamp, self.historicalProfile['timestamp'], self.historicalProfile['e_load'])
-            self.loadForecast[i_energy_type] = loadForecast_e   
+            self.loadForecast[i_energy_type] = loadForecast_e
             self.defaultPower[i_energy_type] = -loadForecast_e
         if 'h_load' in self.historicalProfile and MeasurementType.Heat in self.measurementType:
             i_energy_type = self.measurementType.index(MeasurementType.Heat)
@@ -315,9 +318,9 @@ class InflexibleBuilding(LocalAssetModel):
         Treturn = auc.Treturn
         Hsetpoint = self.loadForecast[1]
         # find the specific heat of steam at the return temperature
-        Cp = 2.014 #[kJ/kgK]
+        Cp = 2.014  # [kJ/kgK]
         # calculate the mass flowrate
-        mfr = Hsetpoint/(Cp*(Tsupply-Treturn)) # [kg/s]
+        mfr = Hsetpoint / (Cp * (Tsupply - Treturn))  # [kg/s]
         self.mass_flowrate[1] = mfr
 
     def find_massflow_water(self):
@@ -339,12 +342,8 @@ class InflexibleBuilding(LocalAssetModel):
         Treturn = auc.Treturn
         Csetpoint = self.loadForecast[2]
         # find the specific heat of water at the supply temperature
-        Cp = 4.2032 #[kJ/kgK] assume pipes are not pressurized (1 atm, 4C)
+        Cp = 4.2032  # [kJ/kgK] assume pipes are not pressurized (1 atm, 4C)
         # calculate massflow
-        mfr = Csetpoint/(Cp*(Treturn-Tsupply))
+        mfr = Csetpoint / (Cp * (Treturn - Tsupply))
         # save value
         self.mass_flowrate[2] = mfr
-
-
-
-

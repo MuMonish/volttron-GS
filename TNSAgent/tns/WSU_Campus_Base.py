@@ -33,6 +33,7 @@ import helics as h
 
 from dash_plotter import create_dash_app
 import pandas as pd
+import pickle
 # create a neighbor model
 WSU_Campus = myTransactiveNode()
 mTN = WSU_Campus
@@ -780,6 +781,8 @@ if helics_flag:
 ############################################################################
 
 ############################ Save results to CSVs  ##############################
+with open('Outputs/localAssets.pkl', 'wb') as f:
+    pickle.dump(mTN.localAssets, f)
 for asset in mTN.localAssets:
     if asset.model is not None:
         df = pd.DataFrame(asset.model.record)

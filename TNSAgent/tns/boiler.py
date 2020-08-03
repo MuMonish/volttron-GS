@@ -16,6 +16,7 @@ class Boiler(LocalAssetModel):
     # The boiler interfaces with the heat auction only
     def __init__(self, name = None, size=0.0, energy_types=[MeasurementType.Heat]):
         super(Boiler, self).__init__(energy_types = energy_types)
+        self.model_type = 'Boiler'
         self.name = name
         self.activeVertices = [[] for et in energy_types]
         self.coefs = [] # dictionary of fit curves for each thermal output

@@ -15,6 +15,7 @@ class GasTurbine(LocalAssetModel):
     # the gas turbine interfaces with the heat auction and the electrical node
     def __init__(self, energy_types=[MeasurementType.PowerReal, MeasurementType.Heat]):
         super(GasTurbine, self).__init__(energy_types = energy_types)
+        self.model_type = 'GasTurbine'
         self.name = None
         self.activeVertices = [[] for et in energy_types]# active vertices that are sent to electric node
         self.cost = 0.0

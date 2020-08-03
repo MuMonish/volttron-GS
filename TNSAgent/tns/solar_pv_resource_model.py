@@ -80,6 +80,7 @@ class SolarPvResourceModel(LocalAssetModel, object):
 
     def __init__(self, name = None, size=0.0, energy_types = [MeasurementType.PowerReal]):
         super(SolarPvResourceModel, self).__init__()
+        self.model_type = 'SolarPV'
         self.cloudFactor = 1.0
         self.measurementType = [MeasurementType.PowerReal]
         self.size = size
