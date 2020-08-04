@@ -53,6 +53,7 @@ for la in localAssets:
         pvs[name] = dbs[name]
         pv_options.append({'label': name, 'value': name})
 
+solution_cost = pd.read_csv("../Outputs/solutions_output.csv")
 
 app = dash.Dash(
     __name__,
@@ -87,6 +88,25 @@ app.layout = html.Div(
                 # Graphs
                 html.Div(
                     [
+                        # Graph 1
+                        html.Div(
+                            [   #Graph 1 Title
+                                html.Div(
+                                    [html.H6("Solution Cost ($)", className="graph__title")]
+                                ),
+                                dcc.Graph(
+                                    id="sol-cost",
+                                    figure=dict(
+                                        layout=dict(
+                                            plot_bgcolor=app_color["graph_bg"],
+                                            paper_bgcolor=app_color["graph_bg"],
+                                        )
+                                    ),
+                                ),
+
+                            ],
+                            className="graph__container first",
+                        ),
                         # Graph 1
                         html.Div(
                             [   #Graph 1 Title
@@ -298,6 +318,39 @@ app.layout = html.Div(
     className="app__container",
 )
 
+@app.callback(
+    Output("sol-cost", "figure")
+)
+def sol_graph():
+    data = []
+    trace = dict(
+        name=name,
+        type="scatter",
+        # line={"color": "#42C4F7"},
+        mode="lines",
+        y=solution_cost["optimal cost"],
+        x=solution_cost["TimeStamp"],
+    )
+    data.append(trace)
+    layout = dict(
+        plot_bgcolor=app_color["graph_bg"],
+        paper_bgcolor=app_color["graph_bg"],
+        # font={"color": "#000"},
+        height=400,
+        xaxis={
+            "showline": True,
+            "zeroline": False,
+            "title": "Time",
+        },
+        yaxis={
+            "showgrid": True,
+            "showline": True,
+            "fixedrange": True,
+            "zeroline": True,
+            "gridcolor": app_color["graph_line"],
+        },
+    )
+    return dict(data=data, layout=layout)
 
 @app.callback(
     Output("elec-disp", "figure"),

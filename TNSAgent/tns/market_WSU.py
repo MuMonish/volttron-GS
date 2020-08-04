@@ -62,6 +62,7 @@ class Market:
         self.totalDualCost = [0.0 for mt in measurementType]*len(measurementType)  # [$]
         self.totalGeneration = [[] for mt in measurementType]   # IntervalValue.empty  # [avg.kW]
         self.totalProductionCost = [[] for mt in measurementType]   # [$]
+        self.solutions = {"TimeStamp": [], "optimal cost": [], "compute time": []}
 
     def assign_system_vertices(self, mtn):
         # FUNCTION ASSIGN_SYSTEM_VERTICES() - Collect active vertices from neighbor
@@ -603,6 +604,11 @@ class Market:
         toc = time.time() - tic
         print('optimal cost: ' + str(result))
         print('problem solved in ' + str(toc) + 'seconds')
+        # Save results. Can be saved to a csv in main file.
+        self.solutions["TimeStamp"].append(self.marketClearingTime)
+        self.solutions["optimal cost"].append(result)
+        self.solutions["compute time"].append(toc)
+
 
         values = {}
         turbine_dispatch = []

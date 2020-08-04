@@ -756,6 +756,7 @@ while time_now < Simulation_time:
             grantedtime = h.helicsFederateRequestTime(fed, time_now)
 
     print("Simulation Time: {}".format(time_now))
+    # dayAhead.solutions["simulation time"].append(time_now)
     dayAhead.check_intervals()
     dayAhead.centralized_dispatch(WSU_Campus)
 
@@ -787,9 +788,7 @@ for asset in mTN.localAssets:
     if asset.model is not None:
         df = pd.DataFrame(asset.model.record)
         df.to_csv('Outputs/'+asset.model.name+'_output.csv', sep=',', index=False)
+df = pd.DataFrame(dayAhead.solutions)
+df.to_csv('Outputs/solutions_output.csv', sep=',', index=False)
 ############################################################################
 
-############################ Start Dash Visualizer  ##############################
-app = create_dash_app(local_assets=mTN.localAssets)
-app.run_server()
-############################################################################
