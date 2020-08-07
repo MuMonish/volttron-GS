@@ -62,7 +62,7 @@ class Market:
         self.totalDualCost = [0.0 for mt in measurementType]*len(measurementType)  # [$]
         self.totalGeneration = [[] for mt in measurementType]   # IntervalValue.empty  # [avg.kW]
         self.totalProductionCost = [[] for mt in measurementType]   # [$]
-        self.solutions = {"TimeStamp": [], "optimal cost": [], "compute time": []}
+        self.solutions = {"TimeStamp": [], "optimal cost": [], "compute time": [], "Grid Cost": [], "Grid Power": []}
 
     def assign_system_vertices(self, mtn):
         # FUNCTION ASSIGN_SYSTEM_VERTICES() - Collect active vertices from neighbor
@@ -645,6 +645,9 @@ class Market:
                     chiller_dispatch.append(var_val)
                 elif (var_name == 'temp'):
                     flexible_building_dispatch.append(var_val)
+                elif (var_name == 'ep_elecfromgrid'):
+                    self.solutions["Grid Cost"].append(var_val * self.electricity_rate[self.marketClearingTime.hour])
+                    self.solutions["Grid Power"].append(var_val)
                 # elif (var_name == 'solar_xp'):
                 #     solarPV_dispatch.append(var_val)
 

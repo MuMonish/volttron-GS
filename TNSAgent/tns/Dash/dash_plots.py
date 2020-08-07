@@ -42,6 +42,7 @@ for i, la in enumerate(localAssets):
             "elec": np.zeros(len(dbs[name].iloc[:, 0])),
             "cool": np.zeros(len(dbs[name].iloc[:, 0])),
             "heat": np.zeros(len(dbs[name].iloc[:, 0])),
+            "grid": np.zeros(len(dbs[name].iloc[:, 0])),
         })
     if model_type in ['InflexibleBuilding']:
         inflexibles[name] = dbs[name]
@@ -66,6 +67,7 @@ for i, la in enumerate(localAssets):
         pv_options.append({'label': name, 'value': name})
 
 solution_cost = pd.read_csv("../Outputs/solutions_output.csv")
+costs["grid"] += solution_cost["Grid Cost"]
 
 app = dash.Dash(
     __name__,
@@ -128,10 +130,10 @@ app.layout = html.Div(
                                         ),
                                         data=[
                                             dict(
-                                            name="Solution Cost",
+                                            name="Utility Cost",
                                             type="scatter",
                                             mode="lines",
-                                            y=solution_cost["optimal cost"],
+                                            y=costs["grid"],
                                             x=solution_cost["TimeStamp"],
                                             ),
                                             dict(
@@ -146,13 +148,6 @@ app.layout = html.Div(
                                             type="scatter",
                                             mode="lines",
                                             y=costs["heat"],
-                                            x=solution_cost["TimeStamp"],
-                                            ),
-                                            dict(
-                                            name="Cooling Cost",
-                                            type="scatter",
-                                            mode="lines",
-                                            y=costs["cool"],
                                             x=solution_cost["TimeStamp"],
                                             )
                                         ]
@@ -373,37 +368,37 @@ app.layout = html.Div(
     className="app__container",
 )
 
-@app.callback(
-    Output("sol-cost", "figure")
-)
-def sol_graph():
-    data = []
-    trace = dict(
-        name=name,
-        type="scatter",
-        mode="lines",
-        y=solution_cost["optimal cost"],
-        x=solution_cost["TimeStamp"],
-    )
-    data.append(trace)
-    layout = dict(
-        plot_bgcolor=app_color["graph_bg"],
-        paper_bgcolor=app_color["graph_bg"],
-        height=400,
-        xaxis={
-            "showline": True,
-            "zeroline": False,
-            "title": "Time",
-        },
-        yaxis={
-            "showgrid": True,
-            "showline": True,
-            "fixedrange": True,
-            "zeroline": True,
-            "gridcolor": app_color["graph_line"],
-        },
-    )
-    return dict(data=data, layout=layout)
+# @app.callback(
+#     Output("sol-cost", "figure")
+# )
+# def sol_graph():
+#     data = []
+#     trace = dict(
+#         name=name,
+#         type="scatter",
+#         mode="lines",
+#         y=solution_cost["optimal cost"],
+#         x=solution_cost["TimeStamp"],
+#     )
+#     data.append(trace)
+#     layout = dict(
+#         plot_bgcolor=app_color["graph_bg"],
+#         paper_bgcolor=app_color["graph_bg"],
+#         height=400,
+#         xaxis={
+#             "showline": True,
+#             "zeroline": False,
+#             "title": "Time",
+#         },
+#         yaxis={
+#             "showgrid": True,
+#             "showline": True,
+#             "fixedrange": True,
+#             "zeroline": True,
+#             "gridcolor": app_color["graph_line"],
+#         },
+#     )
+#     return dict(data=data, layout=layout)
 
 @app.callback(
     Output("elec-disp", "figure"),
