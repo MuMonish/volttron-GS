@@ -174,7 +174,7 @@ class Chiller(LocalAssetModel):
 
         cool_dispatched = self.scheduledPowers[str(MeasurementType.Cooling)]
         elec_consumed = self.use_fit_curve(cool_dispatched)
-        cost = mkt.electricity_rate * elec_consumed
+        cost = mkt.electricity_rate[mkt.marketClearingTime.hour] * elec_consumed
 
         if helics_flag == True:
             key1 = "WSU_C_GLD_" + self.name + "_power_A"
