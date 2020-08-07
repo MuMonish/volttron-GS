@@ -30,10 +30,19 @@ chiller_options = []
 flex_options = []
 inflex_options = []
 pv_options = []
-for la in localAssets:
+
+la = localAssets[0]
+costs = pd.DataFrame(np.zeros(len(localAssets[0].name)))
+for i, la in enumerate(localAssets):
     name = la.model.name
     model_type = la.model.model_type
     dbs[name] = pd.read_csv("../Outputs/" + name + "_output.csv")
+    if i == 0:  # only on first iteration get dimensions to create a costs df
+        costs = pd.DataFrame({
+            "elec": np.zeros(len(dbs[name].iloc[:, 0])),
+            "cool": np.zeros(len(dbs[name].iloc[:, 0])),
+            "heat": np.zeros(len(dbs[name].iloc[:, 0])),
+        })
     if model_type in ['InflexibleBuilding']:
         inflexibles[name] = dbs[name]
         inflex_options.append({'label': name, 'value': name})
@@ -43,12 +52,15 @@ for la in localAssets:
     if model_type in ['Boiler']:
         boilers[name] = dbs[name]
         boiler_options.append({'label': name, 'value': name})
+        costs["heat"] += dbs[name]["Cost"]
     if model_type in ['GasTurbine']:
         gas_turbines[name] = dbs[name]
         gt_options.append({'label': name, 'value': name})
+        costs["elec"] += dbs[name]["Cost"]
     if model_type in ['Chiller']:
         chillers[name] = dbs[name]
         chiller_options.append({'label': name, 'value': name})
+        costs["cool"] += dbs[name]["Cost"]
     if model_type in ['SolarPV']:
         pvs[name] = dbs[name]
         pv_options.append({'label': name, 'value': name})
@@ -100,7 +112,50 @@ app.layout = html.Div(
                                         layout=dict(
                                             plot_bgcolor=app_color["graph_bg"],
                                             paper_bgcolor=app_color["graph_bg"],
-                                        )
+                                            height=400,
+                                            xaxis={
+                                                "showline": True,
+                                                "zeroline": False,
+                                                "title": "Time",
+                                            },
+                                            yaxis={
+                                                "showgrid": True,
+                                                "showline": True,
+                                                "fixedrange": True,
+                                                "zeroline": True,
+                                                "gridcolor": app_color["graph_line"],
+                                            },
+                                        ),
+                                        data=[
+                                            dict(
+                                            name="Solution Cost",
+                                            type="scatter",
+                                            mode="lines",
+                                            y=solution_cost["optimal cost"],
+                                            x=solution_cost["TimeStamp"],
+                                            ),
+                                            dict(
+                                            name="Electric Generation Cost",
+                                            type="scatter",
+                                            mode="lines",
+                                            y=costs["elec"],
+                                            x=solution_cost["TimeStamp"],
+                                            ),
+                                            dict(
+                                            name="Heating Cost",
+                                            type="scatter",
+                                            mode="lines",
+                                            y=costs["heat"],
+                                            x=solution_cost["TimeStamp"],
+                                            ),
+                                            dict(
+                                            name="Cooling Cost",
+                                            type="scatter",
+                                            mode="lines",
+                                            y=costs["cool"],
+                                            x=solution_cost["TimeStamp"],
+                                            )
+                                        ]
                                     ),
                                 ),
 
@@ -326,7 +381,6 @@ def sol_graph():
     trace = dict(
         name=name,
         type="scatter",
-        # line={"color": "#42C4F7"},
         mode="lines",
         y=solution_cost["optimal cost"],
         x=solution_cost["TimeStamp"],
@@ -335,7 +389,6 @@ def sol_graph():
     layout = dict(
         plot_bgcolor=app_color["graph_bg"],
         paper_bgcolor=app_color["graph_bg"],
-        # font={"color": "#000"},
         height=400,
         xaxis={
             "showline": True,
@@ -364,8 +417,10 @@ def sol_graph():
 )
 def elec_graph(gt_selector, pv_selector, chiller_selector, inflex_selector, flex_selector):
     data = []
+    total = pd.DataFrame(np.zeros(len(gas_turbines["GasTurbine1"]["TimeStamp"])))
     if gt_selector is not None:
         for name in gt_selector:
+            total[0] = total[0] + gas_turbines[name]["Electricity Dispatched"]
             trace = dict(
                 name=name,
                 type="scatter",
@@ -377,6 +432,7 @@ def elec_graph(gt_selector, pv_selector, chiller_selector, inflex_selector, flex
             data.append(trace)
     if pv_selector is not None:
         for name in pv_selector:
+            total[0] = total[0] + pvs[name]["Electricity Dispatched"]
             trace = dict(
                 name=name,
                 type="scatter",
@@ -388,6 +444,7 @@ def elec_graph(gt_selector, pv_selector, chiller_selector, inflex_selector, flex
             data.append(trace)
     if chiller_selector is not None:
         for name in chiller_selector:
+            total[0] = total[0] + -chillers[name]["Electricity Consumed"]
             trace = dict(
                 name=name,
                 type="scatter",
@@ -399,6 +456,7 @@ def elec_graph(gt_selector, pv_selector, chiller_selector, inflex_selector, flex
             data.append(trace)
     if inflex_selector is not None:
         for name in inflex_selector:
+            total[0] = total[0] + -inflexibles[name]["Electricity Dispatched"]
             trace = dict(
                 name=name,
                 type="scatter",
@@ -410,6 +468,7 @@ def elec_graph(gt_selector, pv_selector, chiller_selector, inflex_selector, flex
             data.append(trace)
     if flex_selector is not None:
         for name in flex_selector:
+            total[0] = total[0] + -flexibles[name]["Electricity Dispatched"]
             trace = dict(
                 name=name,
                 type="scatter",
@@ -419,6 +478,15 @@ def elec_graph(gt_selector, pv_selector, chiller_selector, inflex_selector, flex
                 x=flexibles[name]["TimeStamp"],
             )
             data.append(trace)
+    #
+    # trace = dict(
+    #     name="TOTAL",
+    #     type="scatter",
+    #     mode="lines",
+    #     y=total[0],
+    #     x=data[-1]["x"],
+    # )
+    # data.append(trace)
     layout = dict(
         plot_bgcolor=app_color["graph_bg"],
         paper_bgcolor=app_color["graph_bg"],
