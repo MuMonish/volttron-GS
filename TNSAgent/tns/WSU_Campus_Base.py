@@ -24,6 +24,7 @@ from chiller import Chiller
 from solar_pv_resource_model import SolarPvResourceModel
 import copy
 import os, shutil
+import numpy as np
 
 from helics_functions import create_config_for_helics
 from helics_functions import create_broker
@@ -34,6 +35,9 @@ import helics as h
 from dash_plotter import create_dash_app
 import pandas as pd
 import pickle
+
+## Reading Price Data
+Price_data = (pd.read_csv('Hourly_price.txt', skiprows=0, sep='\t',header=None))[1].to_numpy()
 # create a neighbor model
 WSU_Campus = myTransactiveNode()
 mTN = WSU_Campus
@@ -76,7 +80,7 @@ MKT.name = 'WSU_Campus_Market'
 MKT.commitment = False # start without having commited any resources
 MKT.converged = False # start without having converged
 MKT.defaultPrice = [0.03, 0.01, 0.02] # [$/kWh]
-MKT.electricity_rate = 0.0551
+MKT.electricity_rate = np.hstack((Price_data,Price_data))
 MKT.gas_rate = 5.6173/293.07
 MKT.diesel_rate = 24.0/12.5
 MKT.dualityGapThreshold = 0.001 #optimal convergence within 0.1Wh

@@ -150,13 +150,14 @@ class Chiller(LocalAssetModel):
         self.coefs = coefs
 
     def get_vertices_from_linear_model(self, mkt):
+        max_electricity_rate = mkt.electricity_rate[mkt.marketClearingTime.hour]
         self.activeVertices = {}
-        neutral_vertex_e = Vertex(marginal_price=float(mkt.electricity_rate), prod_cost=0.0, power=float(self.size) / self.eff)
+        neutral_vertex_e = Vertex(marginal_price=float(max_electricity_rate), prod_cost=0.0, power=float(self.size) / self.eff)
         neutral_vertex_h = Vertex(marginal_price=float('inf'), prod_cost=0.0, power=0.0)
 
-        neutral_vertex_c = Vertex(marginal_price=float(mkt.electricity_rate), prod_cost=float(mkt.electricity_rate) * float(self.size) / self.eff, power = float(self.size))
-        upper_vertex_c = Vertex(marginal_price=float(mkt.electricity_rate), prod_cost=float(mkt.electricity_rate) * float(self.size) / self.eff, power = float(self.size))
-        lower_vertex_c = Vertex(marginal_price=float(mkt.electricity_rate), prod_cost=0.0, power=0.0)
+        neutral_vertex_c = Vertex(marginal_price=float(max_electricity_rate), prod_cost=float(max_electricity_rate) * float(self.size) / self.eff, power = float(self.size))
+        upper_vertex_c = Vertex(marginal_price=float(max_electricity_rate), prod_cost=float(max_electricity_rate) * float(self.size) / self.eff, power = float(self.size))
+        lower_vertex_c = Vertex(marginal_price=float(max_electricity_rate), prod_cost=0.0, power=0.0)
 
         vertices_val = [neutral_vertex_e, neutral_vertex_h, [neutral_vertex_c, lower_vertex_c, upper_vertex_c]]
         vertices_type = [MeasurementType.PowerReal, MeasurementType.Heat, MeasurementType.Cooling]

@@ -153,7 +153,7 @@ class Market:
         allow_thermal_slack = False
         T = self.intervalsToClear
         dt = self.intervalDuration.total_seconds()/3600
-
+        current_time = self.marketClearingTime.hour
         global var_name_list
         var_name_list = []
 
@@ -295,7 +295,7 @@ class Market:
                 n_boilers = n_boilers+1
             elif 'chiller' in str(asset.model):
                 chiller_size.append(asset.model.activeVertices[str(MeasurementType.Cooling)][0].value[2].power)
-                chiller_eff.append(asset.model.activeVertices[str(MeasurementType.Cooling)][0].value[2].power * self.electricity_rate / asset.model.activeVertices[str(MeasurementType.Cooling)][0].value[2].cost)
+                chiller_eff.append(asset.model.activeVertices[str(MeasurementType.Cooling)][0].value[2].power * self.electricity_rate[current_time] / asset.model.activeVertices[str(MeasurementType.Cooling)][0].value[2].cost)
                 n_chillers = n_chillers+1
             elif 'turbine' in str(asset.model):
                 turbine_size.append(asset.model.activeVertices[str(MeasurementType.PowerReal)][0].value[2].power)
@@ -567,8 +567,10 @@ class Market:
         objective_components = []
 
         # utility elec cost
+        price_time = 0
         for var in ep_elecfromgrid[0, RANGE]:
-            objective_components.append(var * self.electricity_rate)
+            objective_components.append(var * self.electricity_rate[current_time+price_time])
+            price_time=price_time+1
 
         # gas for gas turbines
         for i in range(n_turbines):
@@ -608,7 +610,6 @@ class Market:
         self.solutions["TimeStamp"].append(self.marketClearingTime)
         self.solutions["optimal cost"].append(result)
         self.solutions["compute time"].append(toc)
-
 
         values = {}
         turbine_dispatch = []
