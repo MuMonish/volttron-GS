@@ -81,7 +81,7 @@ MKT.commitment = False # start without having commited any resources
 MKT.converged = False # start without having converged
 MKT.defaultPrice = [0.03, 0.01, 0.02] # [$/kWh]
 MKT.electricity_rate = np.hstack((Price_data,Price_data))
-MKT.gas_rate = 5.6173/293.07
+MKT.gas_rate = 5.6173/293.07  # 293.07 1000cf/kwh
 MKT.diesel_rate = 24.0/12.5
 MKT.dualityGapThreshold = 0.001 #optimal convergence within 0.1Wh
 MKT.futureHorizon = timedelta(hours=24)

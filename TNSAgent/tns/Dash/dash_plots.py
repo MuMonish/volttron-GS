@@ -439,13 +439,13 @@ def elec_graph(gt_selector, pv_selector, chiller_selector, inflex_selector, flex
             data.append(trace)
     if chiller_selector is not None:
         for name in chiller_selector:
-            total[0] = total[0] + -chillers[name]["Electricity Consumed"]
+            total[0] = total[0] + chillers[name]["Electricity Consumed"]
             trace = dict(
                 name=name,
                 type="scatter",
                 # line={"color": "#42C4F7"},
                 mode="lines",
-                y=-chillers[name]["Electricity Consumed"],
+                y=chillers[name]["Electricity Consumed"],
                 x=chillers[name]["TimeStamp"],
             )
             data.append(trace)
@@ -457,19 +457,19 @@ def elec_graph(gt_selector, pv_selector, chiller_selector, inflex_selector, flex
                 type="scatter",
                 # line={"color": "#42C4F7"},
                 mode="lines",
-                y=-inflexibles[name]["Electricity Dispatched"],
+                y=inflexibles[name]["Electricity Dispatched"],
                 x=inflexibles[name]["TimeStamp"],
             )
             data.append(trace)
     if flex_selector is not None:
         for name in flex_selector:
-            total[0] = total[0] + -flexibles[name]["Electricity Dispatched"]
+            total[0] = total[0] + flexibles[name]["Electricity Dispatched"]
             trace = dict(
                 name=name,
                 type="scatter",
                 # line={"color": "#42C4F7"},
                 mode="lines",
-                y=-flexibles[name]["Electricity Dispatched"],
+                y=flexibles[name]["Electricity Dispatched"],
                 x=flexibles[name]["TimeStamp"],
             )
             data.append(trace)
@@ -528,7 +528,7 @@ def heat_graph(boiler_selector, inflex_selector, flex_selector):
                 name=name,
                 type="scatter",
                 mode="lines",
-                y=-inflexibles[name]["Heat Dispatched"],
+                y=inflexibles[name]["Heat Dispatched"],
                 x=inflexibles[name]["TimeStamp"],
             )
             data.append(trace)
@@ -538,7 +538,7 @@ def heat_graph(boiler_selector, inflex_selector, flex_selector):
                 name=name,
                 type="scatter",
                 mode="lines",
-                y=-flexibles[name]["Heat Dispatched"],
+                y=flexibles[name]["Heat Dispatched"],
                 x=flexibles[name]["TimeStamp"],
             )
             data.append(trace)
@@ -588,7 +588,7 @@ def cool_graph(chiller_selector, inflex_selector, flex_selector):
                 name=name,
                 type="scatter",
                 mode="lines",
-                y=-inflexibles[name]["Cool Dispatched"],
+                y=inflexibles[name]["Cool Dispatched"],
                 x=inflexibles[name]["TimeStamp"],
             )
             data.append(trace)
@@ -598,7 +598,7 @@ def cool_graph(chiller_selector, inflex_selector, flex_selector):
                 name=name,
                 type="scatter",
                 mode="lines",
-                y=-flexibles[name]["Cool Dispatched"],
+                y=flexibles[name]["Cool Dispatched"],
                 x=flexibles[name]["TimeStamp"],
             )
             data.append(trace)

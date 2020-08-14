@@ -115,9 +115,9 @@ class InflexibleBuilding(LocalAssetModel):
 
     def update_dispatch(self, mkt, fed=None, helics_flag=bool(0)):
 
-        elec_dispatched = self.scheduledPowers[str(MeasurementType.PowerReal)] * 1000
-        heat_dispatched = self.scheduledPowers[str(MeasurementType.Heat)] * 1000
-        cool_dispatched = self.scheduledPowers[str(MeasurementType.Cooling)] * 1000
+        elec_dispatched = self.scheduledPowers[str(MeasurementType.PowerReal)]
+        heat_dispatched = self.scheduledPowers[str(MeasurementType.Heat)]
+        cool_dispatched = self.scheduledPowers[str(MeasurementType.Cooling)]
 
         interval = mkt.marketClearingTime.strftime('%Y%m%dT%H%M%S')
 
@@ -129,9 +129,9 @@ class InflexibleBuilding(LocalAssetModel):
                 pubA = h.helicsFederateGetPublication(fed, key1)
                 pubB = h.helicsFederateGetPublication(fed, key2)
                 pubC = h.helicsFederateGetPublication(fed, key3)
-                status = h.helicsPublicationPublishComplex(pubA, elec_dispatched / 3, 0)
-                status = h.helicsPublicationPublishComplex(pubB, elec_dispatched / 3, 0)
-                status = h.helicsPublicationPublishComplex(pubC, elec_dispatched / 3, 0)
+                status = h.helicsPublicationPublishComplex(pubA, elec_dispatched*1000 / 3, 0)
+                status = h.helicsPublicationPublishComplex(pubB, elec_dispatched*1000 / 3, 0)
+                status = h.helicsPublicationPublishComplex(pubC, elec_dispatched*1000 / 3, 0)
                 print('Data {} Published to GLD {} via Helics -->'.format(elec_dispatched, self.name))
             except:
                 print('Publication was not registered')
