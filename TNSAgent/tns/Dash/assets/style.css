@@ -31,6 +31,9 @@ h6 {
     width: auto;
 }
 
+.content {
+    display: flex;
+}
 .app__content {
     display: flex;
     margin-top: 20px;
@@ -40,9 +43,16 @@ h6 {
 .graph__title {
     color: #2f2f2f !important;
     letter-spacing: 0.3rem !important;
-    padding: 25px 25px 0px 25px;
+    padding: 10px 25px 0px 25px;
     margin-bottom: 0px !important;
     font-size: 1em;
+}
+.graph__check {
+    color: #2f2f2f !important;
+    padding: 10px 0px 0px 25px;
+    margin-bottom: 0px !important;
+    float: right;
+    font-size: 0.95em;
 }
 
 .slider {
