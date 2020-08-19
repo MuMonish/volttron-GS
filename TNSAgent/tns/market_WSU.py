@@ -288,6 +288,8 @@ class Market:
         boiler_eff = []
         chiller_eff =[]
         turbine_eff = []
+        diesel_eff = []  # not implemented
+        diesel_size = []  # not implemented
         for asset in mtn.localAssets:
             if 'boiler' in str(asset.model):
                 boiler_size.append(asset.model.activeVertices[str(MeasurementType.Heat)][0].value[2].power)

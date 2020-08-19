@@ -102,7 +102,7 @@ class Chiller(LocalAssetModel):
         # to the chiller object
 
         # ASSUMPTIONS:
-        # there is a csv with the same name as the boiler
+        # there is a csv with the same name as the chiller
         # this csv has entries of heat out and fuel consumed
 
         if self.datafilename == None:
@@ -194,11 +194,11 @@ class Chiller(LocalAssetModel):
         interval = mkt.marketClearingTime.strftime('%Y%m%dT%H%M%S')
 
         if len(self.record.keys()) == 0:
-            self.record['TimeStamp']=[]
-            self.record['TimeInterval']=[]
-            self.record['Cool Dispatched']=[]
-            self.record['Electricity Consumed']=[]
-            self.record['Cost']=[]
+            self.record['TimeStamp'] = []
+            self.record['TimeInterval'] = []
+            self.record['Cool Dispatched'] = []
+            self.record['Electricity Consumed'] = []
+            self.record['Cost'] = []
         self.record['TimeStamp'].append(str(mkt.marketClearingTime))
         self.record['TimeInterval'].append(str(interval))
         self.record['Cool Dispatched'].append(str(cool_dispatched))

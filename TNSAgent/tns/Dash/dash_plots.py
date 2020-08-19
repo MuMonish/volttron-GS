@@ -79,6 +79,7 @@ for i, la in enumerate(localAssets):
         gt_options.append({'label': name, 'value': name})
         costs["elec"] += dbs[name]["Cost"]
         totals["elec_source"] += gas_turbines[name]['Electricity Dispatched']
+        totals["heat_source"] += gas_turbines[name]['Heat Dispatched']
         totals["gas"] += gas_turbines[name]['Gas Consumed']
         totals["cost"] += gas_turbines[name]['Cost']
     if model_type in ['Chiller']:
@@ -189,7 +190,7 @@ app.layout = html.Div(
                         html.Div(
                             [  # Graph 2 Title
                                 html.Div(
-                                    [html.H6("Electricity Dispatched (kW)", className="two-thirds graph__title"),
+                                    [html.H6("Electricity Dispatched (W)", className="two-thirds graph__title"),
                                      html.Div(
                                          [  # Checklist
                                              dcc.Checklist(
@@ -280,7 +281,7 @@ app.layout = html.Div(
                         html.Div(
                             [
                                 html.Div(
-                                    [html.H6("Fuel Consumed ()", className="graph__title"),
+                                    [html.H6("Fuel Consumed (ft^3 Natural Gas)", className="graph__title"),
                                      html.Div(
                                          [  # Checklist
                                              dcc.Checklist(
@@ -460,37 +461,34 @@ def elec_graph(gt_selector, pv_selector, chiller_selector, inflex_selector, flex
     total = pd.DataFrame(np.zeros(len(gas_turbines["GasTurbine1"]["TimeStamp"])))
     if gt_selector is not None:
         for name in gt_selector:
-            total[0] = total[0] + gas_turbines[name]["Electricity Dispatched"]
             trace = dict(
                 name=name,
                 type="scatter",
                 # line={"color": "#42C4F7"},
                 mode="lines",
-                y=gas_turbines[name]["Electricity Dispatched"],
+                y=gas_turbines[name]["Electricity Dispatched"]*1000,
                 x=gas_turbines[name]["TimeStamp"],
             )
             data.append(trace)
     if pv_selector is not None:
         for name in pv_selector:
-            total[0] = total[0] + pvs[name]["Electricity Dispatched"]
             trace = dict(
                 name=name,
                 type="scatter",
                 # line={"color": "#42C4F7"},
                 mode="lines",
-                y=pvs[name]["Electricity Dispatched"],
+                y=pvs[name]["Electricity Dispatched"]*1000,
                 x=pvs[name]["TimeStamp"],
             )
             data.append(trace)
     if chiller_selector is not None:
         for name in chiller_selector:
-            total[0] = total[0] + chillers[name]["Electricity Consumed"]
             trace = dict(
                 name=name,
                 type="scatter",
                 # line={"color": "#42C4F7"},
                 mode="lines",
-                y=chillers[name]["Electricity Consumed"],
+                y=chillers[name]["Electricity Consumed"]*1000,
                 x=chillers[name]["TimeStamp"],
             )
             data.append(trace)
@@ -500,19 +498,18 @@ def elec_graph(gt_selector, pv_selector, chiller_selector, inflex_selector, flex
                 name=name,
                 type="scatter",
                 mode="lines",
-                y=inflexibles[name]["Electricity Dispatched"],
+                y=inflexibles[name]["Electricity Dispatched"]*1000,
                 x=inflexibles[name]["TimeStamp"],
             )
             data.append(trace)
     if flex_selector is not None:
         for name in flex_selector:
-            total[0] = total[0] + flexibles[name]["Electricity Dispatched"]
             trace = dict(
                 name=name,
                 type="scatter",
                 # line={"color": "#42C4F7"},
                 mode="lines",
-                y=flexibles[name]["Electricity Dispatched"],
+                y=flexibles[name]["Electricity Dispatched"]*1000,
                 x=flexibles[name]["TimeStamp"],
             )
             data.append(trace)
@@ -526,7 +523,7 @@ def elec_graph(gt_selector, pv_selector, chiller_selector, inflex_selector, flex
                 name=label,
                 type="scatter",
                 mode="lines",
-                y=totals[name],
+                y=totals[name]*1000,
                 x=totals["TimeStamp"],
             )
             data.append(trace)

@@ -123,7 +123,7 @@ class GasTurbine(LocalAssetModel):
             capacity = capacity[capacity!=0]
             kWhtocft = 3.41 # 3.41 cubic feet of natural gas per kWh
             # convert efficiency to fuel use
-            fuel_use = 1/efficiency*capacity*size*kWhtocft #convert to cubic feet of natural gas 
+            fuel_use = 1/efficiency*capacity*size*kWhtocft  # convert to cubic feet of natural gas
             # un-normalize the capacity data and remove (0,0) points. We don't want to fit to 0,0, because it is discontinuous
             capacity = size*capacity[fuel_use!=0]
             self.min_capacity = min(capacity)
@@ -148,12 +148,12 @@ class GasTurbine(LocalAssetModel):
             #     coefs_h_binned = np.flip(np.polyfit(heat, cap, 2))
             #     coefs_e.append(coefs_e_binned)
             #     coefs_h.append(coefs_h_binned)
-            regression_order = 4 # fourth oder regression should capture curve with high enough accuracy
-            coefs_e = np.flip(np.polyfit(capacity, fuel_use, regression_order),0)
-            coefs_h = np.flip(np.polyfit(heat_recovered, fuel_use, regression_order),0)
+            regression_order = 4  # fourth oder regression should capture curve with high enough accuracy
+            coefs_e = np.flip(np.polyfit(capacity, fuel_use, regression_order), 0)
+            coefs_h = np.flip(np.polyfit(heat_recovered, fuel_use, regression_order), 0)
         except:
-            coefs_e = [0, 2] # if there is no data start with an assumed efficiency of 50%
-            coefs_h = [0, 1/2] # if there is no data start with an assumed waste heat 2* power out
+            coefs_e = [0, 2]  # if there is no data start with an assumed efficiency of 50%
+            coefs_h = [0, 1/2]  # if there is no data start with an assumed waste heat 2* power out
         #save values
         self.fit_curve['coefs_e'] = coefs_e
         self.fit_curve['coefs_h'] = coefs_h
@@ -198,7 +198,8 @@ class GasTurbine(LocalAssetModel):
     def update_dispatch(self, mkt, fed=None, helics_flag=bool(0)):
 
         elec_dispatched = self.scheduledPowers[str(MeasurementType.PowerReal)]
-        gas_consumed = self.use_fit_curve(self.fit_curve['coefs_e'],elec_dispatched)
+        gas_consumed = self.use_fit_curve(self.fit_curve['coefs_e'], elec_dispatched)
+        heat_dispatched = self.use_fit_curve(self.fit_curve['coefs_h'], elec_dispatched)
         cost = mkt.gas_rate * gas_consumed
 
         if helics_flag == True:
@@ -222,11 +223,13 @@ class GasTurbine(LocalAssetModel):
             self.record['TimeStamp']=[]
             self.record['TimeInterval']=[]
             self.record['Electricity Dispatched']=[]
+            self.record['Heat Dispatched']=[]
             self.record['Gas Consumed']=[]
             self.record['Cost']=[]
         self.record['TimeStamp'].append(str(mkt.marketClearingTime))
         self.record['TimeInterval'].append(str(interval))
         self.record['Electricity Dispatched'].append(str(elec_dispatched))
+        self.record['Heat Dispatched'].append(str(heat_dispatched))
         self.record['Gas Consumed'].append(str(gas_consumed))
         self.record['Cost'].append(str(cost))
         # line_new =  str(mkt.marketClearingTime) + "," + str(interval) + "," + str(elec_dispatched) +  "," + str(gas_consumed) + "," + str(cost) + " \n"

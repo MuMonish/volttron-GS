@@ -163,14 +163,14 @@ class SolarPvResourceModel(LocalAssetModel, object):
 
     def update_dispatch(self, mkt, fed = None, helics_flag = bool(0)):
 
-        elec_dispatched = self.scheduledPowers[str(MeasurementType.PowerReal)]*1000
+        elec_dispatched = self.scheduledPowers[str(MeasurementType.PowerReal)]
 
         if helics_flag == True:
             key = "WSU_C_GLD_" + self.name + "_P_Out"
             try:
                 pub = h.helicsFederateGetPublication(fed, key)
-                status = h.helicsPublicationPublishDouble(pub, -1*elec_dispatched)
-                print('Data {} Published to GLD {} via Helics -->'.format(-1*elec_dispatched, self.name))
+                status = h.helicsPublicationPublishDouble(pub, -1*elec_dispatched*1000)
+                print('Data {} Published to GLD {} via Helics -->'.format(-1*elec_dispatched*1000, self.name))
             except:
                 print('Publication was not registered')
 
